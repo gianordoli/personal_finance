@@ -1,11 +1,5 @@
 /*----- DATA -----*/
-import java.util.Map;
 ArrayList<Transaction> activity;
-int maxInMonth;
-
-/*----- VISUALS -----*/
-PFont regular;
-int textSize;
 
 void setup() {
   
@@ -29,7 +23,8 @@ void debug(){
     Transaction thisTransaction = activity.get(i);
     print("description: " + thisTransaction.description + "\t");
     print("category: " + thisTransaction.category + "\t");
-    println("amount: " + thisTransaction.amount);
+    print("amount: " + thisTransaction.amount + "\t");
+    println("date: " + thisTransaction.month + "\\" + thisTransaction.day + "\\" +thisTransaction.year);
   }
 }
 
@@ -41,20 +36,16 @@ void parseData(String filename){
     String description = thisRow[1];
     String category = thisRow[5];    
     float amount = parseFloat(thisRow[3]);
+    String dateString = thisRow[0];
+    int month = parseInt(dateString.substring(0, dateString.indexOf('/')));
+//    println(month);
+    dateString = dateString.substring(dateString.indexOf('/') + 1);
+//    println(dateString);    
+    int day = parseInt(dateString.substring(0, dateString.indexOf('/')));
+//    println(day);    
+    int year = parseInt(dateString.substring(dateString.indexOf('/') + 1));
+//    println(dateString);
 
-//    String type = thisRow[1];
-//    String borough = thisRow[3];
-    activity.add(new Transaction(description, category, amount));
-//
-//    //Adding the type to our list of types
-//    if (!myTypes.containsKey(type)) {      
-//      myTypes.put(type, 0);
-//    }
-//    //Adding the boroughs
-//    if (!myBoroughs.containsKey(borough)) {
-//      myBoroughs.put(borough, 0);      
-//      //      println("line: " + i + ", borough: " + borough);
-//    }
+    activity.add(new Transaction(description, category, amount, year, month, day));
   }  
-  
 }
