@@ -1,5 +1,7 @@
 /*----- DATA -----*/
 ArrayList<Transaction> activity;
+int totalMonths;
+float maxAmount;
 
 void setup() {
   
@@ -10,12 +12,58 @@ void setup() {
   activity = new ArrayList<Transaction>();
   String filename = "transactions.tsv";  
   parseData(filename);
-
+  
+  totalMonths = getTotalMonths();
+  maxAmount = getMaxAmount();
+  
   debug();
 }
 
 void draw() {
+  background(255);
+  PVector pos = new PVector();
+  PVector size = new PVector();
+  int currMonth = 1;
+  for(int i = 0; i < activity.size(); i++){
+    Transaction thisTransaction = activity.get(i);
+    
+    //New month?
+    if(i > 0){
+      if(thisTransaction.month != activity.get(i - 1).month){
+        currMonth ++;
+      }    
+    }
 
+    pos.x = map(thisTransaction.day, 0, 31, 0, width);
+    pos.y = map(currMonth, 1, totalMonths, height/totalMonths, height);
+    
+//    size.x
+    
+  }
+}
+
+float getMaxAmount(){
+  float myMaxAmount = 0;
+  for(int i = 0; i < activity.size(); i++){
+    Transaction thisTransaction = activity.get(i);
+    if(thisTransaction.amount > myMaxAmount){
+      myMaxAmount = thisTransaction.amount;
+    }
+  }
+  return myMaxAmount;
+}
+  
+int getTotalMonths(){
+  int myTotalMonths = 0;
+  int currMonth = 0;
+  for(int i = 0; i < activity.size(); i++){
+    Transaction thisTransaction = activity.get(i);
+    if(thisTransaction.month != currMonth){
+      myTotalMonths ++;
+      currMonth = thisTransaction.month;
+    }
+  }
+  return myTotalMonths;
 }
 
 void debug(){
@@ -26,6 +74,9 @@ void debug(){
     print("amount: " + thisTransaction.amount + "\t");
     println("date: " + thisTransaction.month + "\\" + thisTransaction.day + "\\" +thisTransaction.year);
   }
+  
+  println("total months: " + totalMonths);
+  println("max amount: " + maxAmount);  
 }
 
 void parseData(String filename){  
@@ -46,6 +97,10 @@ void parseData(String filename){
     int year = parseInt(dateString.substring(dateString.indexOf('/') + 1));
 //    println(dateString);
 
-    activity.add(new Transaction(description, category, amount, year, month, day));
+    String type = trim(thisRow[4]);
+//    println(type);
+    if(!type.equals("credit")){
+      activity.add(new Transaction(description, category, amount, year, month, day));
+    }
   }  
 }
