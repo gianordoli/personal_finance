@@ -24,22 +24,27 @@ void draw() {
   PVector pos = new PVector();
   PVector size = new PVector();
   int currMonth = 1;
-  for(int i = 0; i < activity.size(); i++){
+  for(int i = activity.size() - 1; i > 0; i--){
     Transaction thisTransaction = activity.get(i);
     
     //New month?
     if(i > 0){
       if(thisTransaction.month != activity.get(i - 1).month){
         currMonth ++;
+        println(currMonth);
       }    
     }
 
     pos.x = map(thisTransaction.day, 0, 31, 0, width);
     pos.y = map(currMonth, 1, totalMonths, height/totalMonths, height);
     
-//    size.x
+    size.x = width/31;
+    size.y = map(thisTransaction.amount, 0, maxAmount, 0, height/totalMonths);
     
+    rect(pos.x, pos.y, size.x, -size.y);
+    println(pos.y);
   }
+  noLoop();
 }
 
 float getMaxAmount(){
