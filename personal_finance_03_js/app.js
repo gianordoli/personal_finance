@@ -62,12 +62,12 @@ function processData(data){
 
     	thisTransaction.type = thisRow[4];
    		// console.log(type);
-    	if(thisTransaction.type != 'credit'){
-      		transactions.push(thisTransaction);
+    	// if(thisTransaction.type != 'credit'){
+  		transactions.push(thisTransaction);
       		// console.log('hey');
-    	}else{
-			console.log('credit');
-    	}
+   //  	}else{
+			// console.log('credit');
+   //  	}
 	}
 
 	// console.log(transactions);

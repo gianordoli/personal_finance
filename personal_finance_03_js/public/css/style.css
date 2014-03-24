@@ -12,9 +12,9 @@ body{
 	padding: 0;
 	border: 0;
 	margin: 0;
-	background-color: hsl(50, 100%, 50%);	
+	/*background-color: hsl(50, 100%, 50%);	*/
 	font-family:boldFont;
-	text-align: center;	
+	text-align: left;	
 	font-family: 'Raleway', sans-serif;
 	font-weight: 400;
 	font-size: 13px;
