@@ -67,7 +67,7 @@ function update(){
   // }
   
   //Easing
-  if(Math.abs(targetValue - value) > 0.1){
+  if(Math.abs(targetValue - value) > 0.05){
     value += (targetValue - value) * easingSpeed;    
   }
   // console.log(value);
@@ -94,13 +94,26 @@ function draw(){
   // }
 
   var pos = { x: canvas.width/2, y: canvas.height/2 };
-  var radius = canvas.width * 0.4;
-  var angle = map(value, 0, 1, 0, Math.PI * 1.5);
+  var radius = canvas.width * 0.3;
+  var strokeWidth = radius * 0.4;  
+  var angle = map(value, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
+  var hue = map(value, 0, 1, 140, 55);
   // console.log(angle);
-  ctx.strokeStyle = parseHslaColor(120, 50, 50, 1);
-  ctx.lineWidth = 50;
+
+
+  var grd = ctx.createRadialGradient(pos.x, pos.y, radius - strokeWidth, pos.x, pos.y, radius + strokeWidth);
+  grd.addColorStop(0, parseHslaColor(hue, 90, 90, 1));
+  grd.addColorStop(1, parseHslaColor(hue, 90, 50, 1));
+  // grd.addColorStop(1, parseHslaColor(hue, 90, 100, 1));
+
+  // Fill with gradient
+  // ctx.fillStyle=grd;
+
+  // ctx.fillStyle = parseHslaColor(120, 50, 50, 1);
+  ctx.strokeStyle = grd;
+  ctx.lineWidth = 100;
   ctx.beginPath();
-  ctx.arc(pos.x, pos.y, radius, 0, angle, false);
+  ctx.arc(pos.x, pos.y, radius, - Math.PI * 0.5, angle, false);
   ctx.stroke();  
 
   request = requestAnimFrame(update);   
