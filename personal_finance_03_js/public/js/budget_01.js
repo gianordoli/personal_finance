@@ -81,8 +81,6 @@ function update(){
     angle = map(value, 0, 1, - Math.PI * 0.5, finalAngle);
     hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
     hue = constrain(hue, 55, 140);
-
-    // if()
   }
   // console.log(budget/spending);
   draw();
@@ -247,13 +245,13 @@ var map = function(value, aMin, aMax, bMin, bMax){
 } 
 
 var constrain = function(value, min, max){
-  var constrained;
+  var constrained = value;
   if(value < min){
     constrained = min;
-  }else if(value < max){
+  }else if(value > max){
     constrained = max;
   }
-  return constrained
+  return constrained;
 }
 
 

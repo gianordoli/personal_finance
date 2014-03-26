@@ -58,7 +58,7 @@ function setup(data){
 //     activity.push(transaction);
 //   }
 
-  spending = 40;
+  spending = 70;
   budget = 50;
 
   canvasResize();
@@ -93,17 +93,33 @@ function draw(){
   //Chart
   var pos = { x: canvas.width/2, y: canvas.height/2 };
 
-    //Total circle
     var totalRadius = canvas.width * 0.25;
+    var finalRadius = map(spending/budget, 0, 1, 0, totalRadius);    
+
+    //Total circle
     ctx.fillStyle = parseHslaColor(0, 0, 90, 1);
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, totalRadius, 0, Math.PI * 2, false);
     ctx.fill();
 
+    //Outer circle
+    if(finalRadius > totalRadius){
+      // console.log('oi');
+      var radius2 = map(value, 0, 1, 0, finalRadius);
+      var hue2 = map(radius2, 0, totalRadius, 140, 55);
+      var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2/2, pos.x, pos.y, radius2);
+      ctx.fillStyle = grd2;
+      grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
+      grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, radius2, 0, Math.PI * 2, false);
+      ctx.fill();
+    }    
+
     //Inner circle
-    var finalRadius = map(spending/budget, 0, 1, 0, totalRadius);
     var radius = map(value, 0, 1, 0, finalRadius);
-    var hue = map(radius, 0, finalRadius, 140, 55);
+        radius = constrain(radius, 0, totalRadius);
+    var hue = map(radius, 0, totalRadius, 140, 55);
         hue = constrain(hue, 55, 140);    
     var grd = ctx.createRadialGradient(pos.x, pos.y, totalRadius/2, pos.x, pos.y, totalRadius);
     grd.addColorStop(0, parseHslaColor(hue, 90, 85, 1));
@@ -113,20 +129,6 @@ function draw(){
     ctx.beginPath();
     ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2, false);
     ctx.fill();
-
-    //Outer arc
-    // if(angle > Math.PI * 1.5){
-    //   // console.log('oi');
-    //   var radius2 = radius + strokeWidth;
-    //   var hue2 = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
-    //   var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2 - strokeWidth, pos.x, pos.y, radius2 + strokeWidth);
-    //   ctx.strokeStyle = grd2;
-    //   grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
-    //   grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
-    //   ctx.beginPath();
-    //   ctx.arc(pos.x, pos.y, radius2, - Math.PI * 0.5, angle - (Math.PI*2), false);    
-    //   ctx.stroke();
-    // }
 
   //Text
   var message;
@@ -247,13 +249,13 @@ var map = function(value, aMin, aMax, bMin, bMax){
 } 
 
 var constrain = function(value, min, max){
-  var constrained;
+  var constrained = value;
   if(value < min){
     constrained = min;
-  }else if(value < max){
+  }else if(value > max){
     constrained = max;
   }
-  return constrained
+  return constrained;
 }
 
 
