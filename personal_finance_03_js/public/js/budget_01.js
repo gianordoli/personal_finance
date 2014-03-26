@@ -132,9 +132,8 @@ function draw(){
   var message;
   var fontSize = 21;
   var textPos = { x: pos.x, y: pos.y - fontSize };
-  var brightness = map(value, 0, 1, 100, 50);
   ctx.font = '400 ' + fontSize + 'px Raleway';
-  ctx.fillStyle = parseHslaColor(0, 0, brightness, 1);
+  ctx.fillStyle = parseHslaColor(0, 0, 50, value);
   ctx.textAlign = 'center';
 
   if(budget > spending){

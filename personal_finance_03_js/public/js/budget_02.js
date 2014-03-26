@@ -45,8 +45,6 @@ var budget;
 var value = 0;
 var targetValue = 1;
 var easingSpeed = 0.05;
-var angle;
-var hue;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -60,7 +58,7 @@ function setup(data){
 //     activity.push(transaction);
 //   }
 
-  spending = 70;
+  spending = 40;
   budget = 50;
 
   canvasResize();
@@ -77,12 +75,6 @@ function update(){
   if(Math.abs(targetValue - value) > 0.0005){
     value += (targetValue - value) * easingSpeed;    
     // console.log(value);
-    var finalAngle = map(spending/budget, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
-    angle = map(value, 0, 1, - Math.PI * 0.5, finalAngle);
-    hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
-    hue = constrain(hue, 55, 140);
-
-    // if()
   }
   // console.log(budget/spending);
   draw();
@@ -100,41 +92,48 @@ function draw(){
 
   //Chart
   var pos = { x: canvas.width/2, y: canvas.height/2 };
-  var strokeWidth = 80;
 
-    //Inner arc
-    var radius = canvas.width * 0.25;
-    var grd = ctx.createRadialGradient(pos.x, pos.y, radius - strokeWidth, pos.x, pos.y, radius + strokeWidth);
-    grd.addColorStop(0, parseHslaColor(hue, 90, 90, 1));
+    //Total circle
+    var totalRadius = canvas.width * 0.25;
+    ctx.fillStyle = parseHslaColor(0, 0, 90, 1);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, totalRadius, 0, Math.PI * 2, false);
+    ctx.fill();
+
+    //Inner circle
+    var finalRadius = map(spending/budget, 0, 1, 0, totalRadius);
+    var radius = map(value, 0, 1, 0, finalRadius);
+    var hue = map(radius, 0, finalRadius, 140, 55);
+        hue = constrain(hue, 55, 140);    
+    var grd = ctx.createRadialGradient(pos.x, pos.y, totalRadius/2, pos.x, pos.y, totalRadius);
+    grd.addColorStop(0, parseHslaColor(hue, 90, 85, 1));
     grd.addColorStop(1, parseHslaColor(hue, 90, 50, 1));
 
-    ctx.strokeStyle = grd;
-    ctx.lineWidth = strokeWidth;
+    ctx.fillStyle = grd;
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, radius, - Math.PI * 0.5, angle, false);
-    ctx.stroke();
+    ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2, false);
+    ctx.fill();
 
     //Outer arc
-    if(angle > Math.PI * 1.5){
-      // console.log('oi');
-      var radius2 = radius + strokeWidth;
-      var hue2 = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
-      var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2 - strokeWidth, pos.x, pos.y, radius2 + strokeWidth);
-      ctx.strokeStyle = grd2;
-      grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
-      grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, radius2, - Math.PI * 0.5, angle - (Math.PI*2), false);    
-      ctx.stroke();
-    }
+    // if(angle > Math.PI * 1.5){
+    //   // console.log('oi');
+    //   var radius2 = radius + strokeWidth;
+    //   var hue2 = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+    //   var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2 - strokeWidth, pos.x, pos.y, radius2 + strokeWidth);
+    //   ctx.strokeStyle = grd2;
+    //   grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
+    //   grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
+    //   ctx.beginPath();
+    //   ctx.arc(pos.x, pos.y, radius2, - Math.PI * 0.5, angle - (Math.PI*2), false);    
+    //   ctx.stroke();
+    // }
 
   //Text
   var message;
   var fontSize = 21;
   var textPos = { x: pos.x, y: pos.y - fontSize };
-  var brightness = map(value, 0, 1, 100, 50);
   ctx.font = '400 ' + fontSize + 'px Raleway';
-  ctx.fillStyle = parseHslaColor(0, 0, brightness, 1);
+  ctx.fillStyle = parseHslaColor(0, 0, 50, value);
   ctx.textAlign = 'center';
 
   if(budget > spending){
