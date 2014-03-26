@@ -38,12 +38,15 @@ var canvasPosition;
 
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
-
+var spending;
+var budget;
 
 /*------------------- EASING ------------------*/
 var value = 0;
 var targetValue = 1;
 var easingSpeed = 0.05;
+var angle;
+var hue;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -56,6 +59,10 @@ function setup(data){
 //     initTransaction(transaction, data[i]);   //initializing
 //     activity.push(transaction);
 //   }
+
+  spending = 70;
+  budget = 50;
+
   canvasResize();
   update();
 }
@@ -67,10 +74,17 @@ function update(){
   // }
   
   //Easing
-  if(Math.abs(targetValue - value) > 0.05){
+  if(Math.abs(targetValue - value) > 0.0005){
     value += (targetValue - value) * easingSpeed;    
+    // console.log(value);
+    var finalAngle = map(spending/budget, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
+    angle = map(value, 0, 1, - Math.PI * 0.5, finalAngle);
+    hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+    hue = constrain(hue, 55, 140);
+
+    // if()
   }
-  // console.log(value);
+  // console.log(budget/spending);
   draw();
 }
 
@@ -95,26 +109,25 @@ function draw(){
 
   var pos = { x: canvas.width/2, y: canvas.height/2 };
   var radius = canvas.width * 0.3;
-  var strokeWidth = radius * 0.4;  
-  var angle = map(value, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
-  var hue = map(value, 0, 1, 140, 55);
-  // console.log(angle);
-
+  var strokeWidth = radius * 0.4;
 
   var grd = ctx.createRadialGradient(pos.x, pos.y, radius - strokeWidth, pos.x, pos.y, radius + strokeWidth);
   grd.addColorStop(0, parseHslaColor(hue, 90, 90, 1));
   grd.addColorStop(1, parseHslaColor(hue, 90, 50, 1));
-  // grd.addColorStop(1, parseHslaColor(hue, 90, 100, 1));
 
-  // Fill with gradient
-  // ctx.fillStyle=grd;
-
-  // ctx.fillStyle = parseHslaColor(120, 50, 50, 1);
   ctx.strokeStyle = grd;
   ctx.lineWidth = 100;
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, radius, - Math.PI * 0.5, angle, false);
-  ctx.stroke();  
+  ctx.stroke();
+
+  if(angle > Math.PI * 1.5){
+    // console.log('oi');
+    hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, radius + strokeWidth, - Math.PI * 0.5, angle - (Math.PI*2), false);    
+    ctx.stroke();
+  }
 
   request = requestAnimFrame(update);   
 
@@ -164,30 +177,8 @@ function canvasResize(){
   // console.log(canvasPosition);
 } 
 
-var calculateDistance = function(x1, y1, x2, y2){
-  var angle = Math.atan2(y1 - y2, x1 - x2);
-  var dist;
-  if( (y1 - y2) == 0 ){
-    dist = (x1 - x2) / Math.cos( angle );
-  }else{
-    dist = (y1 - y2) / Math.sin( angle );
-  }
-  return dist;
-}
 
-var parseHslaColor = function(h, s, l, a){
-  var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
-  //console.log('called calculateAngle function');
-  return myHslColor;
-}
-
-var map = function(value, aMin, aMax, bMin, bMax){
-    var srcMax = aMax - aMin,
-      dstMax = bMax - bMin,
-      adjValue = value - aMin;
-    return (adjValue * dstMax / srcMax) + bMin;
-} 
-
+/*--------------- LISTENERS ---------------*/
 function getMousePos(evt){
   mousePos.x = evt.clientX - canvasPosition.left;
   mousePos.y = evt.clientY - canvasPosition.top;
@@ -204,3 +195,41 @@ $('body').keypress(function(e) {
     console.log(targetValue);
   }
 });
+
+
+/*--------------- CORE FUNCTIONS ---------------*/
+var dist = function(x1, y1, x2, y2){
+  var angle = Math.atan2(y1 - y2, x1 - x2);
+  var totalDist;
+  if( (y1 - y2) == 0 ){
+    totalDist = (x1 - x2) / Math.cos( angle );
+  }else{
+    totalDist = (y1 - y2) / Math.sin( angle );
+  }
+  return totalDist;
+}
+
+var parseHslaColor = function(h, s, l, a){
+  var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
+  //console.log('called calculateAngle function');
+  return myHslColor;
+}
+
+var map = function(value, aMin, aMax, bMin, bMax){
+    var srcMax = aMax - aMin,
+      dstMax = bMax - bMin,
+      adjValue = value - aMin;
+    return (adjValue * dstMax / srcMax) + bMin;
+} 
+
+var constrain = function(value, min, max){
+  var constrained;
+  if(value < min){
+    constrained = min;
+  }else if(value < max){
+    constrained = max;
+  }
+  return constrained
+}
+
+
