@@ -108,30 +108,33 @@ function draw(){
   // }
 
   var pos = { x: canvas.width/2, y: canvas.height/2 };
-  var radius = canvas.width * 0.3;
-  var strokeWidth = radius * 0.4;
+  var radius = canvas.width * 0.25;
+  var strokeWidth = radius * 0.6;
 
   var grd = ctx.createRadialGradient(pos.x, pos.y, radius - strokeWidth, pos.x, pos.y, radius + strokeWidth);
   grd.addColorStop(0, parseHslaColor(hue, 90, 90, 1));
   grd.addColorStop(1, parseHslaColor(hue, 90, 50, 1));
 
   ctx.strokeStyle = grd;
-  ctx.lineWidth = 100;
+  ctx.lineWidth = strokeWidth;
   ctx.beginPath();
   ctx.arc(pos.x, pos.y, radius, - Math.PI * 0.5, angle, false);
   ctx.stroke();
 
   if(angle > Math.PI * 1.5){
     // console.log('oi');
-    hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+    var radius2 = radius + strokeWidth;
+    var hue2 = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+    var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2 - strokeWidth, pos.x, pos.y, radius2 + strokeWidth);
+    ctx.strokeStyle = grd2;
+    grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
+    grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, radius + strokeWidth, - Math.PI * 0.5, angle - (Math.PI*2), false);    
+    ctx.arc(pos.x, pos.y, radius2, - Math.PI * 0.5, angle - (Math.PI*2), false);    
     ctx.stroke();
   }
 
-  request = requestAnimFrame(update);   
-
-
+  request = requestAnimFrame(update);
 }
 
 
