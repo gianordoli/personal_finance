@@ -40,6 +40,8 @@ var mousePos;
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
 var maxAmount;
+var allDebit;
+var allCredit;
 
 
 /*------------------- EASING ------------------*/
@@ -69,6 +71,10 @@ function setup(data){
 
   maxAmount = getMaxAmount();
 
+  //Spliting the full array into credit and debit
+  allDebit = splitArray('debit');
+  allCredit = splitArray('credit');
+  
   //Set positions
   for(var i = 0; i < activity.length; i++){
     activity[i].setPosition();
@@ -87,15 +93,15 @@ function draw(){
   ctx.save();
     ctx.translate(0, canvas.height/2);
 
-    for(var i = 0; i < activity.length; i++){
+    for(var i = 0; i < allDebit.length; i++){
 
         //Get next
         // if(i < activity.length - 1){
         //   nextDate = activity[i+1].date;
         // }
         
-        var yPos = map(activity[i].amount, 0, maxAmount, 0, canvas.height/2);
-        activity[i].draw(yPos);
+        var yPos = map(allDebit[i].amount, 0, maxAmount, 0, canvas.height/2);
+        allDebit[i].draw(yPos);
     }
 
   ctx.restore();
@@ -149,6 +155,17 @@ function canvasResize(){
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
   // console.log(canvasPosition);
 } 
+
+var splitArray = function(thisType){
+  var newArray = new Array();
+
+  for(var i = 0; i < activity.length; i++){
+    if(activity[i].type == thisType){
+      newArray.push(activity[i]);
+    }
+  }
+  return newArray;
+}
 
 var getMaxAmount = function(){
   var max = 0;
