@@ -90,18 +90,23 @@ function draw(){
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
+  var nextDate;
+
   ctx.save();
     ctx.translate(0, canvas.height/2);
 
+    //Debit
     for(var i = 0; i < allDebit.length; i++){
+        //Get next date
+        if(i < allDebit.length - 1){
+          nextDate = new Date(allDebit[i+1].date);
+        }
 
-        //Get next
-        // if(i < activity.length - 1){
-        //   nextDate = activity[i+1].date;
-        // }
-        
-        var yPos = map(allDebit[i].amount, 0, maxAmount, 0, canvas.height/2);
-        allDebit[i].draw(yPos);
+        if(allDebit[i].date.valueOf() != nextDate.valueOf()){
+          var yPos = map(allDebit[i].amount, 0, maxAmount, 0, canvas.height/2);
+          allDebit[i].draw(yPos);          
+        }
+        // console.log('this: ' + allDebit[i].date + ' | next: ' + allDebit[i].date);
     }
 
   ctx.restore();
@@ -125,10 +130,10 @@ function drawTransaction(y){
   // console.log(y);
   // console.log(this.xPos);
   if(this.type == 'credit'){
-    ctx.fillStyle = parseHslaColor(120, 60, 50, 0.5);
+    ctx.fillStyle = parseHslaColor(120, 60, 50, 0.3);
     ctx.fillRect(this.xPos, 0, 10, -y);
   }else{
-    ctx.fillStyle = parseHslaColor(340, 100, 50, 1);
+    ctx.fillStyle = parseHslaColor(340, 100, 50, 0.3);
     ctx.fillRect(this.xPos, 0, 10, y);
   }
 }
