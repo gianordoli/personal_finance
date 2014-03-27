@@ -39,6 +39,8 @@ var mousePos;
 
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
+var totalDays;
+var maxAmount;
 
 
 /*------------------- EASING ------------------*/
@@ -66,13 +68,9 @@ function setup(data){
     activity.push(transaction);
   }
 
-  update();
-}
+  totalDays = getTotalDays();
+  maxAmount = getMaxAmount();
 
-function update(){
-  for(var i = 0; i < activity.length; i++){
-    activity[i].update();
-  }
   draw();
 }
 
@@ -82,22 +80,27 @@ function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
-  var ySpacing = 20;
-  
-  var x = 100;
-  var y = 0;
-  ctx.beginPath();
-  for(var i = 0; i < activity.length; i++){
-    activity[i].draw(x, y);
-    y += ySpacing;
-    if(y > canvas.height){
-      y = 0;
-      x += 200;
+
+  var xSpacing = canvas.width/totalDays;
+  var pos = { x: 0, y: 0 };
+  var prevDate = new Date();
+
+  ctx.save();
+    ctx.translate(0, canvas.height/2);
+
+    for(var i = 0; i < activity.length; i++){
+      pos.y = map(activity[i].amount, 0, maxAmount, 0, canvas.height/2);
+      activity[i].draw(pos.x, pos.y);
+
+      if(activity[i].date.getDate() != prevDate.getDate()){
+        prevDate = new Date(activity[i].date);
+        pos.x += xSpacing;
+      }
     }
-  }
+
+  ctx.restore();
   // request = requestAnimFrame(update);   
 }
-
 
 /*------------------ OBJECTS ------------------*/
 function initTransaction(obj, data){
@@ -108,24 +111,20 @@ function initTransaction(obj, data){
   obj.date = new Date(data.date);
   obj.type = data.type;
 
-  //Functions
-  obj.update = updateTransaction;
   obj.draw = drawTransaction;
-}
-
-function updateTransaction(){
-  // console.log(this);
 }
 
 function drawTransaction(x, y){
   // console.log(y);
-  ctx.fillStyle = parseHslaColor(120, 50, 50, 0.2);
-  ctx.beginPath();
-  ctx.arc(x, y, this.amount/10, this.amount/10, 0, Math.PI*2, false);
-  // ctx.arc(x, y, 5, 5, 0, Math.PI*2, false);
-  ctx.fill();  
+  if(this.type == 'credit'){
+    ctx.fillStyle = parseHslaColor(120, 50, 50, 1);
+    ctx.fillRect(x, 0, 10, -y);
+  }else{
+    ctx.fillStyle = parseHslaColor(0, 50, 50, 1);
+    ctx.fillRect(x, 0, 10, y);
+  }
+  
 }
-
 /*--------------- AUX FUNCTIONS ---------------*/
 function canvasResize(){
   screenWidth = window.innerWidth;
@@ -140,6 +139,33 @@ function canvasResize(){
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
   // console.log(canvasPosition);
 } 
+
+
+var getTotalDays = function(){
+  var nDays = 0;
+  var prevDate = new Date();
+  for(var i = 0; i < activity.length; i++){
+    if(activity[i].date.getDate() != prevDate.getDate()){
+      // console.log(activity[i].date);
+      nDays ++;
+      prevDate = new Date(activity[i].date);
+    }
+  }
+  console.log(nDays);
+  return nDays;
+}
+
+var getMaxAmount = function(){
+  var max = 0;
+
+  for(var i = 0; i < activity.length; i++){
+    if(activity[i].amount > max){
+      max = activity[i].amount;
+    }
+  }
+  console.log(max);
+  return max;
+}
 
 /*--------------- LISTENERS ---------------*/
 function getMousePos(evt){

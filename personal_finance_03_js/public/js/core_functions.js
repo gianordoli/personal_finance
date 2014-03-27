@@ -32,3 +32,9 @@ var parseHslaColor = function(h, s, l, a){
   //console.log('called calculateAngle function');
   return myHslColor;
 }
+
+//calculate radius from area
+var getRadiusFromArea = function(area){
+  var r = Math.sqrt(area/Math.PI);
+  return r;
+}
