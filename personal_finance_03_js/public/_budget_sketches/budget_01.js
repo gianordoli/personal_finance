@@ -45,8 +45,6 @@ var budget;
 var value = 0;
 var targetValue = 1;
 var easingSpeed = 0.05;
-var angle;
-var hue;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -77,10 +75,6 @@ function update(){
   if(Math.abs(targetValue - value) > 0.0005){
     value += (targetValue - value) * easingSpeed;    
     // console.log(value);
-    var finalAngle = map(spending/budget, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
-    angle = map(value, 0, 1, - Math.PI * 0.5, finalAngle);
-    hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
-    hue = constrain(hue, 55, 140);
   }
   // console.log(budget/spending);
   draw();
@@ -99,9 +93,13 @@ function draw(){
   //Chart
   var pos = { x: canvas.width/2, y: canvas.height/2 };
   var strokeWidth = 80;
+  var radius = canvas.width * 0.25;
+  var finalAngle = map(spending/budget, 0, 1, - Math.PI * 0.5, Math.PI * 1.5);
 
     //Inner arc
-    var radius = canvas.width * 0.25;
+    var angle = map(value, 0, 1, - Math.PI * 0.5, finalAngle);
+    var hue = map(angle, - Math.PI * 0.5, Math.PI * 1.5, 140, 55);
+        hue = constrain(hue, 55, 140);    
     var grd = ctx.createRadialGradient(pos.x, pos.y, radius - strokeWidth, pos.x, pos.y, radius + strokeWidth);
     grd.addColorStop(0, parseHslaColor(hue, 90, 90, 1));
     grd.addColorStop(1, parseHslaColor(hue, 90, 50, 1));
@@ -209,11 +207,6 @@ function getMousePos(evt){
   // update();
 }
 
-$('body').keypress(function(e) {
-  
-  if (e.keyCode == 0) {
-    // targetValue = 0;
-    targetValue = (targetValue == 1) ? (0):(1); 
-    console.log(targetValue);
-  }
-});
+canvas.addEventListener('mouseup', function(evt){
+  targetValue = (targetValue == 1) ? (0):(1); 
+}, false);

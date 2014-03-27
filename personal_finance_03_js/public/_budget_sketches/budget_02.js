@@ -213,11 +213,6 @@ function getMousePos(evt){
   // update();
 }
 
-$('body').keypress(function(e) {
-  
-  if (e.keyCode == 0) {
-    // targetValue = 0;
-    targetValue = (targetValue == 1) ? (0):(1); 
-    console.log(targetValue);
-  }
-});
+canvas.addEventListener('mouseup', function(evt){
+  targetValue = (targetValue == 1) ? (0):(1); 
+}, false);
