@@ -73,8 +73,10 @@ function setup(data){
 
   //Spliting the full array into credit and debit
   allDebit = splitArray('debit');
+  // allDebit.reverse();
   allCredit = splitArray('credit');
-  
+  // allCredit.reverse();
+
   //Set positions
   for(var i = 0; i < activity.length; i++){
     activity[i].setPosition();
@@ -96,6 +98,8 @@ function draw(){
     ctx.translate(0, canvas.height/2);
 
     //Debit
+    ctx.beginPath();
+    ctx.moveTo(canvas.width, 0, 0);
     for(var i = 0; i < allDebit.length; i++){
         //Get next date
         if(i < allDebit.length - 1){
@@ -108,6 +112,26 @@ function draw(){
         }
         // console.log('this: ' + allDebit[i].date + ' | next: ' + allDebit[i].date);
     }
+    ctx.lineTo(0, 0);
+    ctx.fill();
+
+    //Credit
+    ctx.beginPath();
+    ctx.moveTo(canvas.width, 0, 0);
+    for(var i = 0; i < allCredit.length; i++){
+        //Get next date
+        if(i < allCredit.length - 1){
+          nextDate = new Date(allCredit[i+1].date);
+        }
+
+        if(allCredit[i].date.valueOf() != nextDate.valueOf()){
+          var yPos = map(allCredit[i].amount, 0, maxAmount, 0, canvas.height/2);
+          allCredit[i].draw(-yPos);          
+        }
+        // console.log('this: ' + allDebit[i].date + ' | next: ' + allDebit[i].date);
+    }
+    ctx.lineTo(0, 0);
+    ctx.fill();
 
   ctx.restore();
   // request = requestAnimFrame(update);   
@@ -130,12 +154,13 @@ function drawTransaction(y){
   // console.log(y);
   // console.log(this.xPos);
   if(this.type == 'credit'){
-    ctx.fillStyle = parseHslaColor(120, 60, 50, 0.3);
-    ctx.fillRect(this.xPos, 0, 10, -y);
+    ctx.fillStyle = parseHslaColor(120, 80, 70, 1);
+    // ctx.fillRect(this.xPos, 0, 10, -y);
   }else{
-    ctx.fillStyle = parseHslaColor(340, 100, 50, 0.3);
-    ctx.fillRect(this.xPos, 0, 10, y);
+    ctx.fillStyle = parseHslaColor(340, 80, 50, 1);
+    // ctx.fillRect(this.xPos, 0, 10, y);
   }
+  ctx.lineTo(this.xPos, y);
 }
 
 function setPositionTransaction(){

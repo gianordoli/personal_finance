@@ -109,8 +109,8 @@ function draw(){
       var hue2 = map(radius2, 0, totalRadius, 140, 55);
       var grd2 = ctx.createRadialGradient(pos.x, pos.y, radius2/2, pos.x, pos.y, radius2);
       ctx.fillStyle = grd2;
-      grd2.addColorStop(0, parseHslaColor(hue2, 90, 70, 1));
-      grd2.addColorStop(1, parseHslaColor(hue2, 90, 50, 1));    
+      grd2.addColorStop(0, parseHslaColor(hue2, 90, 80, 1));
+      grd2.addColorStop(1, parseHslaColor(hue2, 90, 80, 1));    
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, radius2, 0, Math.PI * 2, false);
       ctx.fill();
