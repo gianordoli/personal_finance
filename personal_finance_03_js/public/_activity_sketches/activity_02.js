@@ -87,6 +87,27 @@ function setup(data){
     allDebit[i].setColor();
   }
 
+  //Set size
+  var nColumns, nLines;
+  // nColumns = (canvas.width * nLines)/canvas.height;
+  // nColumns * nlines = allDebit.length;
+  // (canvas.width * nLines)/canvas.height * nlines = allDebit.length
+  // nLines * nLines = allDebit.length * canvas.height / canvas.width;
+  nLines = Math.sqrt(allDebit.length * canvas.height / canvas.width);
+  nLines = Math.ceil(nLines);
+  nColumns = (canvas.width * nLines)/canvas.height;
+  nColumns = Math.ceil(nColumns);
+  console.log('columns: ' + nColumns + ', lines: ' + nLines);
+
+  var size = new Object();
+  size.x = Math.floor(canvas.width / nColumns);
+  size.y = Math.floor(canvas.height / nLines);
+  console.log(size);
+
+  for(var i = 0; i < allDebit.length; i++){
+    allDebit[i].size = size;
+  }
+
   draw();
 }
 
@@ -100,10 +121,10 @@ function draw(){
   var pos = { x: 0, y: 0 };
   for(var i = allDebit.length - 1; i > 0; i--){
     allDebit[i].draw(pos);
-    pos.x += 10;
+    pos.x += allDebit[i].size.x;
     if(pos.x >= canvas.width){
       pos.x = 0;
-      pos.y += 10;
+      pos.y += allDebit[i].size.y;
     }
   }
 
@@ -126,7 +147,7 @@ function initTransaction(obj, data){
 function drawTransaction(pos){
   // console.log(this.color);
   ctx.fillStyle = this.color;
-  ctx.fillRect(pos.x, pos.y, 10, 10);
+  ctx.fillRect(pos.x, pos.y, this.size.x, this.size.y);
 }
 
 function setColorTransaction(){
