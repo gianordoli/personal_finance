@@ -75,17 +75,16 @@ function setup(data){
 
   //Spliting the full array into credit and debit
   allDebit = splitArray('debit');
-  // allDebit.reverse();
+  // console.log(allDebit.length);  
   allCredit = splitArray('credit');
-  // allCredit.reverse();
 
   //Create categories colors
   palette = extractCategories(allDebit);
   createColors(palette);
 
-  //Set positions
-  for(var i = 0; i < activity.length; i++){
-    activity[i].setPosition();
+  //Set color
+  for(var i = 0; i < allDebit.length; i++){
+    allDebit[i].setColor();
   }
 
   draw();
@@ -98,48 +97,16 @@ function draw(){
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-  var nextDate;
-
-  ctx.save();
-    ctx.translate(0, canvas.height/2);
-
-    //Debit
-    ctx.beginPath();
-    ctx.moveTo(canvas.width, 0, 0);
-    for(var i = 0; i < allDebit.length; i++){
-        //Get next date
-        if(i < allDebit.length - 1){
-          nextDate = new Date(allDebit[i+1].date);
-        }
-
-        if(allDebit[i].date.valueOf() != nextDate.valueOf()){
-          var yPos = map(allDebit[i].amount, 0, maxAmount, 0, canvas.height/2);
-          allDebit[i].draw(yPos);          
-        }
-        // console.log('this: ' + allDebit[i].date + ' | next: ' + allDebit[i].date);
+  var pos = { x: 0, y: 0 };
+  for(var i = allDebit.length - 1; i > 0; i--){
+    allDebit[i].draw(pos);
+    pos.x += 10;
+    if(pos.x >= canvas.width){
+      pos.x = 0;
+      pos.y += 10;
     }
-    ctx.lineTo(0, 0);
-    ctx.fill();
+  }
 
-    //Credit
-    ctx.beginPath();
-    ctx.moveTo(canvas.width, 0, 0);
-    for(var i = 0; i < allCredit.length; i++){
-        //Get next date
-        if(i < allCredit.length - 1){
-          nextDate = new Date(allCredit[i+1].date);
-        }
-
-        if(allCredit[i].date.valueOf() != nextDate.valueOf()){
-          var yPos = map(allCredit[i].amount, 0, maxAmount, 0, canvas.height/2);
-          allCredit[i].draw(-yPos);          
-        }
-        // console.log('this: ' + allDebit[i].date + ' | next: ' + allDebit[i].date);
-    }
-    ctx.lineTo(0, 0);
-    ctx.fill();
-
-  ctx.restore();
   // request = requestAnimFrame(update);   
 }
 
@@ -152,29 +119,23 @@ function initTransaction(obj, data){
   obj.date = new Date(data.date);
   obj.type = data.type;
 
-  obj.setPosition = setPositionTransaction;
+  obj.setColor = setColorTransaction;
   obj.draw = drawTransaction;
 }
 
-function drawTransaction(y){
-  // console.log(y);
-  // console.log(this.xPos);
-  if(this.type == 'credit'){
-    ctx.fillStyle = parseHslaColor(120, 80, 70, 1);
-    // ctx.fillRect(this.xPos, 0, 10, -y);
-  }else{
-    ctx.fillStyle = parseHslaColor(340, 80, 50, 1);
-    // ctx.fillRect(this.xPos, 0, 10, y);
-  }
-  ctx.lineTo(this.xPos, y);
+function drawTransaction(pos){
+  // console.log(this.color);
+  ctx.fillStyle = this.color;
+  ctx.fillRect(pos.x, pos.y, 10, 10);
 }
 
-function setPositionTransaction(){
-  // console.log(daysInBetween(activity[0].date, this.date));
-  this.xPos = map(daysInBetween(activity[0].date, this.date),
-                  0, daysInBetween(activity[0].date, activity[activity.length - 1].date),
-                  canvas.width, 0);
-  // console.log(this.xPos);
+function setColorTransaction(){
+  for(var i = 0; i < palette.length; i++){
+    if (palette[i].category == this.category){
+      this.color = parseHslaColor(palette[i].hue, 100, 50, 1);
+      break;
+    };
+  }
 }
 
 /*--------------- AUX FUNCTIONS ---------------*/
@@ -213,7 +174,7 @@ var extractCategories = function(myArray){
       //If the category is already stored...
       if(myArray[i].category == categoriesList[j].category){
         isStored = true;
-        console.log('exists: ' + myArray[i].category);
+        // console.log('exists: ' + myArray[i].category);
         break;
       }
     }
@@ -222,16 +183,16 @@ var extractCategories = function(myArray){
       var paletteObj = new Object();
       // console.log('store: ' + myArray[i].category);
       paletteObj.category = myArray[i].category;
-      console.log('store: ' + paletteObj.category);
+      // console.log('store: ' + paletteObj.category);
       categoriesList.push(paletteObj);
     }
   }
   
   //Debug
-  console.log(categoriesList.length);
-  for(var i = 0; i < categoriesList.length; i++){
-    console.log('[' + i + ']' + categoriesList[i].category);
-  }
+  // console.log(categoriesList.length);
+  // for(var i = 0; i < categoriesList.length; i++){
+  //   console.log('[' + i + ']' + categoriesList[i].category);
+  // }
   return categoriesList;
 }
 
@@ -241,9 +202,9 @@ function createColors(myArray){
   }
 
   //Debug
-  for(var i = 0; i < myArray.length; i++){
-    console.log('hue: ' + myArray[i].hue + ', category: ' + myArray[i].category);
-  }
+  // for(var i = 0; i < myArray.length; i++){
+  //   console.log('hue: ' + myArray[i].hue + ', category: ' + myArray[i].category);
+  // }
 }
 
 var splitArray = function(thisType){
