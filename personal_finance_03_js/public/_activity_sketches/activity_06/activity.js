@@ -60,7 +60,7 @@ function setup(data){
   firstDay = new Date(activity[activity.length - 1].date);
   lastDay = new Date(activity[0].date);
 
-  maxAmount = getMaxAmount();  
+  maxAmount = getMaxAmount('debit');  
 
   //Create categories colors
   categories = extractCategories(activity, 'debit');
@@ -92,8 +92,12 @@ function draw(){
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
 
-  for(var i = 0; i < categories.length; i++){
-    categories[i].draw();
+  // for(var i = 0; i < categories.length; i++){
+  //   categories[i].draw();
+  // }
+
+  for(var i = 0; i < lineCategories.length; i++){
+    lineCategories[i].draw();
   }
 
   // request = requestAnimFrame(update);   
@@ -109,11 +113,6 @@ function initTransaction(obj, data){
   obj.amount = data.amount;
   obj.date = new Date(data.date);
   obj.type = data.type;
-
-  obj.draw = drawTransaction;
-}
-
-function drawTransaction(){
 }
 
 
@@ -159,56 +158,73 @@ function initLineCategory(obj, description, type, transaction){
 
   obj.setPos = setPosLineCategory;
   obj.setColor = setColorCategory;
+  obj.draw = drawLineCategory;
+}
+
+function drawLineCategory(){
+  console.log('called drawLineCategory()');
+  ctx.beginPath();
+  ctx.lineTo(0, canvas.height);
+  for(var i = 0; i < this.vertices.length; i++){
+    ctx.lineTo(this.vertices[i].x, this.vertices[i].y);
+    // console.log(this.vertices[i].x);
+  }
+  ctx.strokeStyle = this.color;
+  ctx.stroke();
 }
 
 function setPosLineCategory(){
+  // console.log(this.description);
 
-  //1. Calculate total transactions per day
-  var myArray = this.transactions;
-  var dailyTransactions = [];
-  var prevDate = new Date();
-  var j = -1;
+  //1. Creating empty array with all dates and 0 amount
+  var transactionsPerDay = [];
+  // console.log('max days difference: ' + daysInBetween(firstDay, lastDay));
+  for(var i = 0; i < daysInBetween(firstDay, lastDay); i ++){
+    var obj = new Object();
+    obj.date = new Date(firstDay.getFullYear(), firstDay.getMonth(), firstDay.getDate()+i);
+    obj.amount = 0;
+    transactionsPerDay.push(obj);
+  }  
 
-  console.log(this.description);
-
-  for(var i = 0; i < myArray.length; i++){
-
-    if(myArray[i].date.valueOf() != prevDate.valueOf()){
-      dailyTransactions.push(myArray[i]);
-      j++;
-      prevDate = new Date(myArray[i].date);
-      // console.log(prevDate.getDate());
-    }
-    else{
-      dailyTransactions[j].amount += myArray[i].amount;
-      // console.log('--------------------------------------------------------->');
-      // console.log(dailyTransactions[j]);
+  //2. Calculate total amount per day
+  for(var i = 0; i < transactionsPerDay.length; i++){
+    for(var j = 0; j < this.transactions.length; j++){
+      if(transactionsPerDay[i].date.valueOf() == this.transactions[j].date.valueOf()){
+        transactionsPerDay[i].amount += this.transactions[j].amount;
+      }
     }
   }
-  // console.log(dailyTransactions);  
-  // console.log('DAILY TRANSACTIONS ----------------------');
-  this.dailyTransactions = dailyTransactions;
+  //Debug
+  // for(var i = 0; i < transactionsPerDay.length; i ++){
+  //   console.log(transactionsPerDay[i].date.toDateString() + ': $ ' + transactionsPerDay[i].amount);
+  // }    
+  this.transactionsPerDay = transactionsPerDay;
 
-  //2. Setting vertices positions
+
+  //3. Setting vertices positions
   var vertices = [];
-  myArray = this.dailyTransactions;
-  for(var i = 0; i < myArray.length; i++){
-    var pos = {   x: map(daysInBetween(firstDay, myArray[i].date),
+  for(var i = 0; i < transactionsPerDay.length; i++){
+    var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay),
                          0, canvas.width),
-                  y: map(myArray[i].amount, 0, maxAmount, canvas.height, 0)
-              };
+                     y: map(transactionsPerDay[i].amount, 0, maxAmount, canvas.height, 0)
+                 };
     // console.log(pos);
-    vertices.push(pos);
+    vertices.push(vertex);
   }
+  this.vertices = vertices;
+  // console.log('vertices: ');
+  // console.log(this.vertices);
 }
 
-var getMaxAmount = function(){
+var getMaxAmount = function(filter){
   var max = 0;
 
   for(var i = 0; i < activity.length; i++){
-    if(activity[i].amount > max){
-      max = activity[i].amount;
+    if(activity[i].type == filter){
+      if(activity[i].amount > max){
+        max = activity[i].amount;
+      }
     }
   }
   console.log(max);
