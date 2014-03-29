@@ -76,6 +76,20 @@ function draw(){
     lineCategories[i].draw();
   }
 
+  //months
+  var prevMonth;
+  ctx.fillStyle = 'gray';
+  for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
+    var month = lineCategories[0].transactionsPerDay[i].date.getMonth();
+    var pos= { x: lineCategories[0].vertices[i].x,
+               y: canvas.height - 50
+              }
+    if(month != prevMonth || prevMonth === 'undefined'){
+      ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
+      prevMonth = month;
+    }
+  }  
+
   // request = requestAnimFrame(update);   
 }
 

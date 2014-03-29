@@ -1,4 +1,6 @@
 /*--------------- CORE FUNCTIONS ---------------*/
+var monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec' ];
+
 var dist = function(x1, y1, x2, y2){
   var angle = Math.atan2(y1 - y2, x1 - x2);
   var totalDist;
