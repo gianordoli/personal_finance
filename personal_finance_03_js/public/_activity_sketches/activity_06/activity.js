@@ -157,7 +157,7 @@ function setPosLineCategory(){
   var myArray = this.transactions;
   var dailyTransactions = [];
   var prevDate = new Date();
-  var j = 0;
+  var j = -1;
 
   console.log(this.description);
 
@@ -167,11 +167,13 @@ function setPosLineCategory(){
       dailyTransactions.push(myArray[i]);
       j++;
       prevDate = new Date(myArray[i].date);
-      console.log(prevDate.getDate());
+      // console.log(prevDate.getDate());
     }
-    // else{
-    //   dailyTransactions[j].amount += myArray[i].amount;
-    // }
+    else{
+      dailyTransactions[j].amount += myArray[i].amount;
+      // console.log('--------------------------------------------------------->');
+      // console.log(dailyTransactions[j]);
+    }
   }
   console.log(dailyTransactions);  
   console.log('DAILY TRANSACTIONS ----------------------');
