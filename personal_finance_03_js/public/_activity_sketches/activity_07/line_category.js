@@ -68,7 +68,7 @@ function setPosLineCategory(){
   for(var i = 0; i < transactionsPerDay.length; i++){
     var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
-                         0, canvas.width),
+                         margin, canvas.width - margin),
                      y: map(transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
                  };
     // console.log(pos);

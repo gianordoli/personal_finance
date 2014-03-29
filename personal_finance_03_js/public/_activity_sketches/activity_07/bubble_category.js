@@ -18,8 +18,8 @@ function initBubbleCategory(obj, description, totalAmount, type){
 }
 
 function setPosBubbleCategory(){
-  this.pos = { x: this.radius + Math.random() * (canvas.width - 2*this.radius),
-               y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*this.radius) };
+  this.pos = { x: this.radius + margin + Math.random() * (canvas.width - 2*(this.radius + margin)),
+               y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*(this.radius + margin)) };
 }
 
 function setSizeBubbleCategory(){

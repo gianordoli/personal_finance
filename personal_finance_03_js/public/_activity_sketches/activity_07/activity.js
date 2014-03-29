@@ -41,7 +41,8 @@ var easingSpeed = 0.05;
 /*------------------- VISUALS -----------------*/
 var chartBasis = 100;
 var bubbleCeil = chartBasis + 32;
-var bubbleScale = 7;
+var bubbleScale = 6;
+var margin = 20;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){

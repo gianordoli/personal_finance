@@ -13,8 +13,8 @@ function createWorld() {
 	createGround(world);
 
 	//Boundaries
-	createBox(world, 0, canvas.height/2, 1, canvas.height/2);
-	createBox(world, canvas.width, canvas.height/2, 1, canvas.height/2);	
+	createBox(world, 0, 0, margin, canvas.height);
+	createBox(world, canvas.width,0, margin, canvas.height);	
 	myCeil = createBox(world, canvas.width/2, bubbleCeil, canvas.width, 1);
 
 	return world;
@@ -23,8 +23,8 @@ function createWorld() {
 function createGround(world) {
 	console.log('called ground');
 	var groundSd = new b2BoxDef();
-	groundSd.extents.Set(canvas.width * 2, 1);
-	groundSd.restitution = 0.2;
+	groundSd.extents.Set(canvas.width * 2, 20);
+	groundSd.restitution = 0.5;
 	var groundBd = new b2BodyDef();
 	groundBd.AddShape(groundSd);
 	groundBd.position.Set(-canvas.width, canvas.height);
