@@ -1,6 +1,6 @@
 function drawWorld(world, context) {
 	// console.log('drawWorld');
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	// ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	for (var b = world.m_bodyList; b; b = b.m_next) {
 		for (var s = b.GetShapeList(); s != null; s = s.GetNext()) {
@@ -51,7 +51,7 @@ function drawShape(shape, context) {
 		context.fillStyle = color;
 		context.fill();
 
-		categories[index].draw(pos);
+		bubbleCategories[index].draw(pos);
 		// console.log(index);
 
 		break;

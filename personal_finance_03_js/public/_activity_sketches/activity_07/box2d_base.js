@@ -1,27 +1,3 @@
-/*---------- REQUEST ANIMATION FRAME ----------*/
-var request;
-window.requestAnimFrame = (function(callback) {
-  return  window.requestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.oRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-          function(callback) {
-              return window.setTimeout(callback, 1000 / 60);
-          };
-})();
-
-window.cancelRequestAnimFrame = ( function() {
-    return window.cancelAnimationFrame          ||
-        window.webkitCancelRequestAnimationFrame    ||
-        window.mozCancelRequestAnimationFrame       ||
-        window.oCancelRequestAnimationFrame     ||
-        window.msCancelRequestAnimationFrame        ||
-        clearTimeout
-} )(); 
-
-
-
 //1. Create World
 function createWorld() {
 	console.log('called createWorld');
@@ -36,8 +12,9 @@ function createWorld() {
 
 	//Boundaries
 	createBox(world, 0, 0, 1, canvas.height);
-	createBox(world, 0, 0, canvas.width, 1);
-	createBox(world, canvas.width, 0, 1, canvas.height);
+	createBox(world, canvas.width, 0, 1, canvas.height);	
+	createBox(world, 0, bubbleCeil, canvas.width, 1);
+
 	return world;
 }
 
@@ -52,11 +29,11 @@ function createGround(world) {
 	return world.CreateBody(groundBd)
 }
 
-function createBall(world, index, pos, size, color) {
+function createBall(world, index, pos, radius, color) {
 	console.log('called createBall');
 	var ballSd = new b2CircleDef();
 	ballSd.density = 1.0;
-	ballSd.radius = size;
+	ballSd.radius = radius;
 	ballSd.restitution = 0.7;
 	ballSd.friction = 0;
 	ballSd.color = color;
@@ -79,24 +56,4 @@ function createBox(world, x, y, width, height, fixed) {
 	boxBd.AddShape(boxSd);
 	boxBd.position.Set(x,y);
 	return world.CreateBody(boxBd)
-}
-
-// var initId = 0;
-// var world;
-// var ctx;
-// var canvas;
-// var canvasPosition;
-// var mousePos = new Object();
-
-function step(cnt) {
-	var stepping = false;
-	var timeStep = 2/60;
-	var iteration = 1;
-
-	world.Step(timeStep, iteration);
-	drawWorld(world, ctx);
-	// setTimeout('step(' + (cnt || 0) + ')', 10);
-
-	//Loop
-	request = requestAnimationFrame(step);
 }

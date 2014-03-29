@@ -34,19 +34,19 @@ var maxAmount;
 
 /*------------------- EASING ------------------*/
 var value = 0;
-var targetValue = 1;
+var targetValue = 0;
 var easingSpeed = 0.05;
 
 
 /*------------------- VISUALS -----------------*/
 var chartBasis = 100;
-var bubbleCeil = chartBasis + 36;
-var bubbleScale = 8;
+var bubbleCeil = chartBasis + 32;
+var bubbleScale = 7;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
-  console.log('called setup');
+  // console.log('called setup');
 
   //Size
   canvasResize();  
@@ -87,13 +87,10 @@ function setup(data){
   }
 
   //Box 2D
-  // world = createWorld();
-  // for(var i = 0; i < categories.length; i++){
-  //   var pos = { x: Math.random()*canvas.width, y: Math.random()*canvas.height };
-  //   var size = getRadiusFromArea(categories[i].totalAmount)*8;
-  //   var color = categories[i].color;
-  //   createBall(world, i, pos, size, color);
-  // }  
+  world = createWorld();
+  for(var i = 0; i < bubbleCategories.length; i++){
+    createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
+  }  
 
   update();
 }
@@ -105,9 +102,17 @@ function update(){
     // console.log(value);
   }
   chartBasis = map(value, 0, 1, 100, canvas.height - 200);
+  bubbleCeil = chartBasis + 32;
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].update();
   }
+
+  var stepping = false;
+  var timeStep = 2/60;
+  var iteration = 1;
+
+  world.Step(timeStep, iteration);
+  // setTimeout('step(' + (cnt || 0) + ')', 10);
 
   draw();
 }
@@ -127,10 +132,18 @@ function draw(){
   }
 
   //Bubbles
-  for(var i = 0; i < bubbleCategories.length; i++){
-    bubbleCategories[i].draw();
-  }
+  drawWorld(world, ctx);
+  // for(var i = 0; i < bubbleCategories.length; i++){
+  //   bubbleCategories[i].draw();
+  // }
 
+  //Months
+  drawMonthScale();
+
+  request = requestAnimFrame(update);   
+}
+
+function drawMonthScale(){
   //months
   var prevMonth;
   ctx.fillStyle = 'gray';
@@ -138,7 +151,7 @@ function draw(){
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
     var month = lineCategories[0].transactionsPerDay[i].date.getMonth();
     var pos= { x: lineCategories[0].vertices[i].x,
-               y: chartBasis + 26
+               y: chartBasis + 21
               }
     if(month != prevMonth || prevMonth === 'undefined'){
       ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
@@ -149,8 +162,6 @@ function draw(){
   ctx.moveTo(0, bubbleCeil);
   ctx.lineTo(canvas.width, bubbleCeil);
   ctx.stroke();  
-
-  // request = requestAnimFrame(update);   
 }
 
 
@@ -181,42 +192,8 @@ var getMaxAmount = function(filter){
       }
     }
   }
-  console.log(max);
+  // console.log(max);
   return max;
-}
-
-//BUBBLE CATEGORIES
-//-----------------
-function initBubbleCategory(obj, description, totalAmount, type){
-  //Variables
-  obj.description = description;
-  obj.totalAmount = totalAmount;
-  obj.type = type;
-
-  obj.pos = new Object();
-  obj.radius = 0;
-
-  obj.setColor = setColorCategory;
-  obj.setPos = setPosBubbleCategory;
-  obj.setSize = setSizeBubbleCategory;
-  obj.draw = drawBubbleCategory;
-}
-
-function setPosBubbleCategory(){
-  this.pos = { x: this.radius + Math.random() * (canvas.width - 2*this.radius),
-               y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*this.radius) };
-}
-
-function setSizeBubbleCategory(){
-  this.radius = getRadiusFromArea(this.totalAmount)*bubbleScale;
-}
-
-function drawBubbleCategory(){
-  // console.log('called drawBubbleCategory');
-  ctx.fillStyle = this.color;
-  ctx.beginPath();
-  ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI*2, false);
-  ctx.fill();
 }
 
 var extractLineCategories = function(myArray, filter){
@@ -253,7 +230,7 @@ var extractLineCategories = function(myArray, filter){
   }
   
   //Debug
-  console.log(categoriesList);
+  // console.log(categoriesList);
   // for(var i = 0; i < categoriesList.length; i++){
   //   console.log('[' + i + ']' + categoriesList[i].category);
   // }
@@ -292,7 +269,7 @@ var extractBubbleCategories = function(myArray, filter){
   }
   
   //Debug
-  console.log(categoriesList);
+  // console.log(categoriesList);
   // for(var i = 0; i < categoriesList.length; i++){
   //   console.log('[' + i + ']' + categoriesList[i].category);
   // }
