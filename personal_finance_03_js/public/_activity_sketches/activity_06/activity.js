@@ -36,14 +36,7 @@ function setup(data){
   console.log('called setup');
 
   //Size
-  canvasResize();
-
-  //Listeners
-  mousePos = new Object();
-  // canvas.addEventListener('mouseup', function(evt){
-  //   isPressed = false;  // Set my "isPressed" variable to false
-  //   getMousePos(evt);
-  // }, false);    
+  canvasResize();  
 
   //Data
   activity = new Array();
@@ -76,6 +69,8 @@ function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+  // lineCategories[12].draw();
 
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].draw();
@@ -114,10 +109,14 @@ function initLineCategory(obj, description, type, transaction){
 function drawLineCategory(){
   console.log('called drawLineCategory()');
   ctx.beginPath();
-  ctx.lineTo(0, canvas.height);
-  for(var i = 0; i < this.vertices.length; i++){
-    ctx.lineTo(this.vertices[i].x, this.vertices[i].y);
-    // console.log(this.vertices[i].x);
+
+  var offset = 10;
+  
+  for(var i = 0; i < this.vertices.length - 1; i++){
+    ctx.moveTo(this.vertices[i].x, this.vertices[i].y);    
+    ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
+                      this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
+                      this.vertices[i + 1].x, this.vertices[i + 1].y);
   }
   ctx.strokeStyle = this.color;
   ctx.stroke();
@@ -160,7 +159,7 @@ function setPosLineCategory(){
   var vertices = [];
   for(var i = 0; i < transactionsPerDay.length; i++){
     var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
-                         0, daysInBetween(firstDay, lastDay),
+                         0, daysInBetween(firstDay, lastDay) - 1,
                          0, canvas.width),
                      y: map(transactionsPerDay[i].amount, 0, maxAmount, canvas.height - 100, 0)
                  };
