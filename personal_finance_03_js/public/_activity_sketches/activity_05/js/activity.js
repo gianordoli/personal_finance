@@ -26,7 +26,8 @@ var world;
 
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
-var categories;  //Categories and hues
+var categories;
+var lineCategories;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -55,21 +56,22 @@ function setup(data){
   //Create categories colors
   categories = extractCategories(activity, 'debit');
 
+  lineCategories = extractLineCategories(activity, 'debit');
+
   //Set
   for(var i = 0; i < categories.length; i++){
     categories[i].setColor(categories, i);
   }
 
-  //Box 2D
-  world = createWorld();
   for(var i = 0; i < categories.length; i++){
     var pos = { x: Math.random()*canvas.width, y: Math.random()*canvas.height };
     var size = getRadiusFromArea(categories[i].totalAmount)*8;
     var color = categories[i].color;
-    createBall(world, i, pos, size, color);
+    categories[i].pos = pos;
+    categories[i].size = size;
+    categories[i].color = color;
   }
-  step();
-  // draw();
+  draw();
 }
 
 function draw(){
@@ -116,22 +118,33 @@ function initCategory(obj, description, totalAmount, type){
   obj.draw = drawCategory;
 }
 
-function drawCategory(pos){
+function drawCategory(){
   // var pos = { x: Math.random()*canvas.width,
   //             y: Math.random()*canvas.height };
-  // ctx.fillStyle = this.color;
-  // ctx.beginPath();
-  // ctx.arc(pos.x, pos.y, getRadiusFromArea(this.totalAmount)*5, 0, Math.PI*2, false);
-  // ctx.fill();
+  ctx.fillStyle = this.color;
+  ctx.beginPath();
+  ctx.arc(this.pos.x, this.pos.y, getRadiusFromArea(this.totalAmount)*5, 0, Math.PI*2, false);
+  ctx.fill();
 
   ctx.fillStyle = 'black';
   ctx.textAlign = 'center';
-  ctx.fillText(this.description, pos.x, pos.y);
+  ctx.fillText(this.description, this.pos.x, this.pos.y);
 }
 
 function setColorCategory(myArray, i){
   var hue = map(i, 0, myArray.length, 0, 360);
   this.color = parseHslaColor(hue, 100, 50, 0.8);
+}
+
+
+//LINE CATEGORIES
+//---------------
+function initLineCategory(obj, description, type, transaction){
+  //Variables
+  obj.description = description;
+  obj.type = type;
+  obj.transactions = [];  //amount, date
+  obj.transactions.push(transaction);
 }
 
 /*--------------- AUX FUNCTIONS ---------------*/
@@ -145,6 +158,47 @@ function canvasResize(){
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
   // console.log(canvasPosition);
 } 
+
+var extractLineCategories = function(myArray, filter){
+
+  var categoriesList = [];
+
+  //1. Go through the full array of spendings
+  for(var i = 0; i < myArray.length; i++){
+    
+    if(myArray[i].type == filter){
+
+      var transaction = { amount: myArray[i].amount,
+                          date: new Date(myArray[i].date) };
+
+      //2. Go through the full array of categories
+      var isStored = false;
+      for(var j = 0; j < categoriesList.length; j++){
+        //If the category is already stored...
+        if(myArray[i].category == categoriesList[j].description){
+          isStored = true;
+          categoriesList[j].transactions.push(transaction);
+          // console.log('exists: ' + myArray[i].category);
+          break;
+        }
+      }
+      
+      if(!isStored){
+        var categoriesObj = new Object();
+        // console.log('store: ' + myArray[i].category);
+        initLineCategory(categoriesObj, myArray[i].category, filter, transaction);
+        categoriesList.push(categoriesObj);
+      }
+    }
+  }
+  
+  //Debug
+  console.log(categoriesList);
+  // for(var i = 0; i < categoriesList.length; i++){
+  //   console.log('[' + i + ']' + categoriesList[i].category);
+  // }
+  return categoriesList;
+}
 
 
 //Extract categories from a given array
