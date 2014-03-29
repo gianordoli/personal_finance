@@ -28,6 +28,8 @@ var world;
 var activity; //Array; list of all transactions (objects)
 var categories;
 var lineCategories;
+var firstDay, lastDay;
+var maxAmount;
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -53,13 +55,20 @@ function setup(data){
     activity.push(transaction);
   }
 
+  // console.log(activity[0].date.getDate() + '/' + activity[0].date.getMonth());
+  // console.log(activity[activity.length - 1].date.getDate() + '/' + activity[activity.length - 1].date.getMonth());
+  firstDay = new Date(activity[activity.length - 1].date);
+  lastDay = new Date(activity[0].date);
+
+  maxAmount = getMaxAmount();  
+
   //Create categories colors
   categories = extractCategories(activity, 'debit');
 
   lineCategories = extractLineCategories(activity, 'debit');
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].setColor(lineCategories, i);
-    lineCategories[i].setPos();
+    lineCategories[i].setPos(activity);
   }
 
   //Set
@@ -154,6 +163,7 @@ function initLineCategory(obj, description, type, transaction){
 
 function setPosLineCategory(){
 
+  //1. Calculate total transactions per day
   var myArray = this.transactions;
   var dailyTransactions = [];
   var prevDate = new Date();
@@ -175,27 +185,35 @@ function setPosLineCategory(){
       // console.log(dailyTransactions[j]);
     }
   }
-  console.log(dailyTransactions);  
-  console.log('DAILY TRANSACTIONS ----------------------');
+  // console.log(dailyTransactions);  
+  // console.log('DAILY TRANSACTIONS ----------------------');
+  this.dailyTransactions = dailyTransactions;
+
+  //2. Setting vertices positions
+  var vertices = [];
+  myArray = this.dailyTransactions;
+  for(var i = 0; i < myArray.length; i++){
+    var pos = {   x: map(daysInBetween(firstDay, myArray[i].date),
+                         0, daysInBetween(firstDay, lastDay),
+                         0, canvas.width),
+                  y: map(myArray[i].amount, 0, maxAmount, canvas.height, 0)
+              };
+    // console.log(pos);
+    vertices.push(pos);
+  }
 }
 
-function sumUpDailyTransactions(){
+var getMaxAmount = function(){
+  var max = 0;
 
+  for(var i = 0; i < activity.length; i++){
+    if(activity[i].amount > max){
+      max = activity[i].amount;
+    }
+  }
+  console.log(max);
+  return max;
 }
-
-
-
-// var getMaxAmount = function(){
-//   var max = 0;
-
-//   for(var i = 0; i < activity.length; i++){
-//     if(activity[i].amount > max){
-//       max = activity[i].amount;
-//     }
-//   }
-//   console.log(max);
-//   return max;
-// }
 
 /*--------------- AUX FUNCTIONS ---------------*/
 function canvasResize(){
