@@ -27,6 +27,8 @@ function drawShape(shape, context) {
 			pos = circle.m_position;
 			color = circle.m_color;
 			
+			circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 25);
+
 			var r = circle.m_radius;
 			var segments = 16.0;
 			var theta = 0.0;
@@ -48,8 +50,8 @@ function drawShape(shape, context) {
 			context.lineTo(pos2.x, pos2.y);
 		}
 
-		context.fillStyle = color;
-		context.fill();
+		context.strokeStyle = color;
+		context.stroke();
 
 		bubbleCategories[index].update(pos);
 		// console.log(index);

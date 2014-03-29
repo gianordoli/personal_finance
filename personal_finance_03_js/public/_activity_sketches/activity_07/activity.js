@@ -43,7 +43,6 @@ var chartBasis = 100;
 var bubbleCeil = chartBasis + 32;
 var bubbleScale = 7;
 
-
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
   // console.log('called setup');
@@ -152,6 +151,7 @@ function drawMonthScale(){
   //months
   var prevMonth;
   ctx.fillStyle = 'gray';
+  ctx.textAlign = 'left';  
   ctx.font = '400 21px Raleway';
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
     var month = lineCategories[0].transactionsPerDay[i].date.getMonth();
@@ -162,12 +162,7 @@ function drawMonthScale(){
       ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
       prevMonth = month;
     }
-  }
-  ctx.strokeStyle = 'gray';
-  ctx.textAlign = 'left';
-  ctx.moveTo(0, bubbleCeil);
-  ctx.lineTo(canvas.width, bubbleCeil);
-  ctx.stroke();  
+  } 
 }
 
 
