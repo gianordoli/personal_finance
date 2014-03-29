@@ -30,6 +30,12 @@ var lineCategories;
 var firstDay, lastDay;
 var maxAmount;
 
+/*------------------- EASING ------------------*/
+var chartBasis = 100;
+var value = 0;
+var targetValue = 1;
+var easingSpeed = 0.05;
+
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
@@ -37,6 +43,10 @@ function setup(data){
 
   //Size
   canvasResize();  
+
+  canvas.addEventListener('mouseup', function(evt){
+    targetValue = (targetValue == 1) ? (0):(1); 
+  }, false);  
 
   //Data
   activity = new Array();
@@ -60,6 +70,20 @@ function setup(data){
     lineCategories[i].setPos(activity);
   }
 
+  update();
+}
+
+function update(){
+  //Easing
+  if(Math.abs(targetValue - value) > 0.0005){
+    value += (targetValue - value) * easingSpeed;    
+    // console.log(value);
+  }
+  chartBasis = map(value, 0, 1, 100, canvas.height - 200);
+  for(var i = 0; i < lineCategories.length; i++){
+    lineCategories[i].update();
+  }
+
   draw();
 }
 
@@ -79,18 +103,23 @@ function draw(){
   //months
   var prevMonth;
   ctx.fillStyle = 'gray';
+  ctx.font = '400 21px Raleway';
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
     var month = lineCategories[0].transactionsPerDay[i].date.getMonth();
     var pos= { x: lineCategories[0].vertices[i].x,
-               y: canvas.height - 50
+               y: chartBasis + 26
               }
     if(month != prevMonth || prevMonth === 'undefined'){
       ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
       prevMonth = month;
     }
-  }  
+  }
+  ctx.strokeStyle = 'gray';
+  ctx.moveTo(0, chartBasis + 36);
+  ctx.lineTo(canvas.width, chartBasis + 36);
+  ctx.stroke();  
 
-  // request = requestAnimFrame(update);   
+  request = requestAnimFrame(update);   
 }
 
 /*------------------ OBJECTS ------------------*/
@@ -117,11 +146,18 @@ function initLineCategory(obj, description, type, transaction){
 
   obj.setPos = setPosLineCategory;
   obj.setColor = setColorCategory;
+  obj.update = updateLineCategory;
   obj.draw = drawLineCategory;
 }
 
+function updateLineCategory(){
+  for(var i = 0; i < this.vertices.length; i++){
+    this.vertices[i].y = map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50);
+  }
+}
+
 function drawLineCategory(){
-  console.log('called drawLineCategory()');
+  // console.log('called drawLineCategory()');
   ctx.beginPath();
 
   var offset = 10;
@@ -175,7 +211,7 @@ function setPosLineCategory(){
     var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
                          0, canvas.width),
-                     y: map(transactionsPerDay[i].amount, 0, maxAmount, canvas.height - 100, 0)
+                     y: map(transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
                  };
     // console.log(pos);
     vertices.push(vertex);
