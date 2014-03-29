@@ -50,8 +50,8 @@ function drawShape(shape, context) {
 			context.lineTo(pos2.x, pos2.y);
 		}
 
-		context.strokeStyle = color;
-		context.stroke();
+		context.fillStyle = color;
+		context.fill();
 
 		bubbleCategories[index].update(pos);
 		// console.log(index);
@@ -69,7 +69,7 @@ function drawShape(shape, context) {
 			}
 			context.lineTo(tV.x, tV.y);
 		}
-		ctx.fillStyle = 'gray';
+		ctx.fillStyle = 'white';
 		context.fill();
 
 		break;

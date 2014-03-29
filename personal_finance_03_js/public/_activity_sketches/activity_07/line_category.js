@@ -7,6 +7,7 @@ function initLineCategory(obj, description, type, transaction){
   obj.transactions = [];  //amount, date
   obj.transactions.push(transaction);
 
+  obj.setTransactionsPerDay = setTransactionsPerDayLineCategory;
   obj.setPos = setPosLineCategory;
   obj.setColor = setColorCategory;
   obj.update = updateLineCategory;
@@ -35,7 +36,7 @@ function drawLineCategory(){
   ctx.stroke();
 }
 
-function setPosLineCategory(){
+function setTransactionsPerDayLineCategory(){
   // console.log(this.description);
 
   //1. Creating empty array with all dates and 0 amount
@@ -61,15 +62,16 @@ function setPosLineCategory(){
   //   console.log(transactionsPerDay[i].date.toDateString() + ': $ ' + transactionsPerDay[i].amount);
   // }    
   this.transactionsPerDay = transactionsPerDay;
+}
 
-
+function setPosLineCategory(){
   //3. Setting vertices positions
   var vertices = [];
-  for(var i = 0; i < transactionsPerDay.length; i++){
-    var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
+  for(var i = 0; i < this.transactionsPerDay.length; i++){
+    var vertex = {   x: map(daysInBetween(firstDay, this.transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
                          margin, canvas.width - margin),
-                     y: map(transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
+                     y: map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
                  };
     // console.log(pos);
     vertices.push(vertex);

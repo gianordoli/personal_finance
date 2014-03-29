@@ -75,7 +75,8 @@ function setup(data){
   lineCategories = extractLineCategories(activity, 'debit');
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].setColor(lineCategories, i);
-    lineCategories[i].setPos(activity);
+    lineCategories[i].setTransactionsPerDay();
+    lineCategories[i].setPos();
   }
 
   //Bubbles
