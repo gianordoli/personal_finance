@@ -36,8 +36,16 @@ function drawBubbleCategory(){
   // ctx.beginPath();
   // ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI*2, false);
   // ctx.fill();
+  var message = this.description;
   ctx.fillStyle = 'black';
   ctx.font = '400 16px Raleway';
-  ctx.textAlign = 'center';
-  ctx.fillText(this.description, this.pos.x, this.pos.y);  
+  ctx.textAlign = 'center';  
+  if(message.indexOf(' ') != -1){
+    var newMessage = message.substr(0, message.indexOf(' '));
+    ctx.fillText(newMessage, this.pos.x, this.pos.y - 8);
+    newMessage = message.substr(message.indexOf(' ') + 1);
+    ctx.fillText(newMessage, this.pos.x, this.pos.y + 8);
+  }else{
+    ctx.fillText(this.description, this.pos.x, this.pos.y);  
+  }
 }
