@@ -51,13 +51,14 @@ function drawShape(shape, context) {
 		context.fillStyle = color;
 		context.fill();
 
-		bubbleCategories[index].draw(pos);
+		bubbleCategories[index].update(pos);
 		// console.log(index);
 
 		break;
 	case b2Shape.e_polyShape:
 		{
 			var poly = shape;
+			// console.log(poly.m_position);
 			var tV = b2Math.AddVV(poly.m_position, b2Math.b2MulMV(poly.m_R, poly.m_vertices[0]));
 			context.moveTo(tV.x, tV.y);
 			for (var i = 0; i < poly.m_vertexCount; i++) {
@@ -66,7 +67,7 @@ function drawShape(shape, context) {
 			}
 			context.lineTo(tV.x, tV.y);
 		}
-
+		ctx.fillStyle = 'gray';
 		context.fill();
 
 		break;

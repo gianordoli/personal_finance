@@ -114,6 +114,9 @@ function update(){
   world.Step(timeStep, iteration);
   // setTimeout('step(' + (cnt || 0) + ')', 10);
 
+  var ceilPosition = {x: 0, y: bubbleCeil };
+  myCeil.SetOriginPosition( ceilPosition, 0 );
+  // console.log(myCeil.m_position.y);
   draw();
 }
 
@@ -133,9 +136,11 @@ function draw(){
 
   //Bubbles
   drawWorld(world, ctx);
-  // for(var i = 0; i < bubbleCategories.length; i++){
-  //   bubbleCategories[i].draw();
-  // }
+
+  //bubbles text
+  for(var i = 0; i < bubbleCategories.length; i++){
+    bubbleCategories[i].draw();
+  }
 
   //Months
   drawMonthScale();
@@ -159,6 +164,7 @@ function drawMonthScale(){
     }
   }
   ctx.strokeStyle = 'gray';
+  ctx.textAlign = 'left';
   ctx.moveTo(0, bubbleCeil);
   ctx.lineTo(canvas.width, bubbleCeil);
   ctx.stroke();  

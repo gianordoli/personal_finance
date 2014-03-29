@@ -12,6 +12,8 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.setColor = setColorCategory;
   obj.setPos = setPosBubbleCategory;
   obj.setSize = setSizeBubbleCategory;
+
+  obj.update = updateBubbleCategory;
   obj.draw = drawBubbleCategory;
 }
 
@@ -24,14 +26,18 @@ function setSizeBubbleCategory(){
   this.radius = getRadiusFromArea(this.totalAmount)*bubbleScale;
 }
 
-function drawBubbleCategory(pos){
+function updateBubbleCategory(pos){
   this.pos = pos;
+}
+
+function drawBubbleCategory(){
   // console.log('called drawBubbleCategory');
   // ctx.fillStyle = this.color;
   // ctx.beginPath();
   // ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI*2, false);
   // ctx.fill();
   ctx.fillStyle = 'black';
+  ctx.font = '400 16px Raleway';
   ctx.textAlign = 'center';
   ctx.fillText(this.description, this.pos.x, this.pos.y);  
 }

@@ -1,3 +1,5 @@
+var myCeil;
+
 //1. Create World
 function createWorld() {
 	console.log('called createWorld');
@@ -13,7 +15,7 @@ function createWorld() {
 	//Boundaries
 	createBox(world, 0, 0, 1, canvas.height);
 	createBox(world, canvas.width, 0, 1, canvas.height);	
-	createBox(world, 0, bubbleCeil, canvas.width, 1);
+	myCeil = createBox(world, 0, bubbleCeil, canvas.width, 1);
 
 	return world;
 }
