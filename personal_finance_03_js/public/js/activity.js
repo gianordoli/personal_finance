@@ -14,35 +14,19 @@ socket.on('write', function(data) {
   setup(data);
 });
 
-/*---------- REQUEST ANIMATION FRAME ----------*/
-var request;
-window.requestAnimFrame = (function(callback) {
-  return  window.requestAnimationFrame ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame ||
-          window.oRequestAnimationFrame ||
-          window.msRequestAnimationFrame ||
-          function(callback) {
-              return window.setTimeout(callback, 1000 / 60);
-          };
-})();
-
-
 
 /*-------------- CANVAS VARIABLES -------------*/
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 var canvasPosition;
 var mousePos;
+var world;
 
 
 
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
 var categories;  //Categories and hues
-
-
-/*------------------- EASING ------------------*/
 
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -54,9 +38,10 @@ function setup(data){
 
   //Listeners
   mousePos = new Object();
-  canvas.addEventListener('mousemove', function(evt){
-    getMousePos(evt);
-  }, false);
+  // canvas.addEventListener('mouseup', function(evt){
+  //   isPressed = false;  // Set my "isPressed" variable to false
+  //   getMousePos(evt);
+  // }, false);    
 
   //Data
   activity = new Array();
@@ -75,7 +60,16 @@ function setup(data){
     categories[i].setColor(categories, i);
   }
 
-  draw();
+  //Box 2D
+  world = createWorld();
+  for(var i = 0; i < categories.length; i++){
+    var pos = { x: Math.random()*canvas.width, y: Math.random()*canvas.height };
+    var size = getRadiusFromArea(categories[i].totalAmount)*8;
+    var color = categories[i].color;
+    createBall(world, i, pos, size, color);
+  }
+  step();
+  // draw();
 }
 
 function draw(){
@@ -122,13 +116,13 @@ function initCategory(obj, description, totalAmount, type){
   obj.draw = drawCategory;
 }
 
-function drawCategory(){
-  var pos = { x: Math.random()*canvas.width,
-              y: Math.random()*canvas.height };
-  ctx.fillStyle = this.color;
-  ctx.beginPath();
-  ctx.arc(pos.x, pos.y, getRadiusFromArea(this.totalAmount)*5, 0, Math.PI*2, false);
-  ctx.fill();
+function drawCategory(pos){
+  // var pos = { x: Math.random()*canvas.width,
+  //             y: Math.random()*canvas.height };
+  // ctx.fillStyle = this.color;
+  // ctx.beginPath();
+  // ctx.arc(pos.x, pos.y, getRadiusFromArea(this.totalAmount)*5, 0, Math.PI*2, false);
+  // ctx.fill();
 
   ctx.fillStyle = 'black';
   ctx.textAlign = 'center';
@@ -148,9 +142,6 @@ function canvasResize(){
   marginTop = $('#title').height();
   // console.log('margin top: ' + marginTop);
 
-  canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position
-  canvas.height = 640;
-  canvas.width = 1136;
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
   // console.log(canvasPosition);
 } 
@@ -201,5 +192,6 @@ function getMousePos(evt){
   mousePos.y = evt.clientY - canvasPosition.top;
   //You have to use clientX! .x doesn't work with Firefox!
   // console.log(mousePos);
+  // createBall(world, mousePos.x, mousePos.y);
 }
 
