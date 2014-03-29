@@ -26,7 +26,6 @@ var world;
 
 /*--------------- DATA VARIABLES --------------*/
 var activity; //Array; list of all transactions (objects)
-var categories;
 var lineCategories;
 var firstDay, lastDay;
 var maxAmount;
@@ -62,26 +61,12 @@ function setup(data){
 
   maxAmount = getMaxAmount('debit');  
 
-  //Create categories colors
-  categories = extractCategories(activity, 'debit');
-
   lineCategories = extractLineCategories(activity, 'debit');
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].setColor(lineCategories, i);
     lineCategories[i].setPos(activity);
   }
 
-  //Set
-  for(var i = 0; i < categories.length; i++){
-    categories[i].setColor(categories, i);
-  }
-
-  for(var i = 0; i < categories.length; i++){
-    var pos = { x: Math.random()*canvas.width, y: Math.random()*canvas.height };
-    var size = getRadiusFromArea(categories[i].totalAmount)*8;
-    categories[i].pos = pos;
-    categories[i].size = size;
-  }
   draw();
 }
 
@@ -91,10 +76,6 @@ function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.strokeStyle = 'black';
   ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
-  // for(var i = 0; i < categories.length; i++){
-  //   categories[i].draw();
-  // }
 
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].draw();
@@ -113,37 +94,6 @@ function initTransaction(obj, data){
   obj.amount = data.amount;
   obj.date = new Date(data.date);
   obj.type = data.type;
-}
-
-
-//CATEGORIES
-//----------
-function initCategory(obj, description, totalAmount, type){
-  //Variables
-  obj.description = description;
-  obj.totalAmount = totalAmount;
-  obj.type = type;
-
-  obj.setColor = setColorCategory;
-  obj.draw = drawCategory;
-}
-
-function drawCategory(){
-  // var pos = { x: Math.random()*canvas.width,
-  //             y: Math.random()*canvas.height };
-  ctx.fillStyle = this.color;
-  ctx.beginPath();
-  ctx.arc(this.pos.x, this.pos.y, getRadiusFromArea(this.totalAmount)*5, 0, Math.PI*2, false);
-  ctx.fill();
-
-  ctx.fillStyle = 'black';
-  ctx.textAlign = 'center';
-  ctx.fillText(this.description, this.pos.x, this.pos.y);
-}
-
-function setColorCategory(myArray, i){
-  var hue = map(i, 0, myArray.length, 0, 360);
-  this.color = parseHslaColor(hue, 100, 50, 0.8);
 }
 
 
@@ -171,6 +121,11 @@ function drawLineCategory(){
   }
   ctx.strokeStyle = this.color;
   ctx.stroke();
+}
+
+function setColorCategory(myArray, i){
+  var hue = map(i, 0, myArray.length, 0, 360);
+  this.color = parseHslaColor(hue, 100, 50, 0.8);
 }
 
 function setPosLineCategory(){
@@ -207,7 +162,7 @@ function setPosLineCategory(){
     var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay),
                          0, canvas.width),
-                     y: map(transactionsPerDay[i].amount, 0, maxAmount, canvas.height, 0)
+                     y: map(transactionsPerDay[i].amount, 0, maxAmount, canvas.height - 100, 0)
                  };
     // console.log(pos);
     vertices.push(vertex);
@@ -216,6 +171,18 @@ function setPosLineCategory(){
   // console.log('vertices: ');
   // console.log(this.vertices);
 }
+
+/*--------------- AUX FUNCTIONS ---------------*/
+function canvasResize(){
+  screenWidth = window.innerWidth;
+  screenHeight = window.innerHeight;
+
+  marginTop = $('#title').height();
+  // console.log('margin top: ' + marginTop);
+
+  canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
+  // console.log(canvasPosition);
+} 
 
 var getMaxAmount = function(filter){
   var max = 0;
@@ -230,18 +197,6 @@ var getMaxAmount = function(filter){
   console.log(max);
   return max;
 }
-
-/*--------------- AUX FUNCTIONS ---------------*/
-function canvasResize(){
-  screenWidth = window.innerWidth;
-  screenHeight = window.innerHeight;
-
-  marginTop = $('#title').height();
-  // console.log('margin top: ' + marginTop);
-
-  canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
-  // console.log(canvasPosition);
-} 
 
 var extractLineCategories = function(myArray, filter){
 
@@ -283,53 +238,3 @@ var extractLineCategories = function(myArray, filter){
   // }
   return categoriesList;
 }
-
-
-//Extract categories from a given array
-var extractCategories = function(myArray, filter){
-
-  var categoriesList = [];
-
-  //1. Go through the full array of spendings
-  for(var i = 0; i < myArray.length; i++){
-    
-    if(myArray[i].type == filter){
-
-      //2. Go through the full array of categories
-      var isStored = false;
-      for(var j = 0; j < categoriesList.length; j++){
-        //If the category is already stored...
-        if(myArray[i].category == categoriesList[j].description){
-          isStored = true;
-          categoriesList[j].totalAmount += myArray[i].amount;
-          // console.log('exists: ' + myArray[i].category);
-          break;
-        }
-      }
-      
-      if(!isStored){
-        var categoriesObj = new Object();
-        // console.log('store: ' + myArray[i].category);
-        initCategory(categoriesObj, myArray[i].category, myArray[i].amount, filter);
-        categoriesList.push(categoriesObj);
-      }
-    }
-  }
-  
-  //Debug
-  console.log(categoriesList);
-  // for(var i = 0; i < categoriesList.length; i++){
-  //   console.log('[' + i + ']' + categoriesList[i].category);
-  // }
-  return categoriesList;
-}
-
-/*--------------- LISTENERS ---------------*/
-function getMousePos(evt){
-  mousePos.x = evt.clientX - canvasPosition.left;
-  mousePos.y = evt.clientY - canvasPosition.top;
-  //You have to use clientX! .x doesn't work with Firefox!
-  // console.log(mousePos);
-  // createBall(world, mousePos.x, mousePos.y);
-}
-
