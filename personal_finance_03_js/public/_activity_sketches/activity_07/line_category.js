@@ -15,7 +15,7 @@ function initLineCategory(obj, description, type, transaction){
 
 function updateLineCategory(){
   for(var i = 0; i < this.vertices.length; i++){
-    this.vertices[i].y = map(this.transactionsPerDay[i].amount, 0, maxAmount, chartGround, bubbleGround);
+    this.vertices[i].y = map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50);
   }
 }
 
@@ -69,7 +69,7 @@ function setPosLineCategory(){
     var vertex = {   x: map(daysInBetween(firstDay, transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
                          0, canvas.width),
-                     y: map(transactionsPerDay[i].amount, 0, maxAmount, bubbleGround, chartGround)
+                     y: map(transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
                  };
     // console.log(pos);
     vertices.push(vertex);

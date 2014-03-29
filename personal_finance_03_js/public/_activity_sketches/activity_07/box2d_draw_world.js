@@ -27,7 +27,7 @@ function drawShape(shape, context) {
 			pos = circle.m_position;
 			color = circle.m_color;
 			
-			circle.m_radius = map(value, 0, 1, 25, bubbleCategories[index].radius);
+			circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 25);
 
 			var r = circle.m_radius;
 			var segments = 16.0;
