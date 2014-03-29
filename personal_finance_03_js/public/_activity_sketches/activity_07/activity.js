@@ -34,14 +34,14 @@ var maxAmount;
 
 /*------------------- EASING ------------------*/
 var value = 0;
-var targetValue = 0;
+var targetValue = 1;
 var easingSpeed = 0.05;
 
 
 /*------------------- VISUALS -----------------*/
-var chartBasis = 100;
-var bubbleCeil = chartBasis + 32;
-var bubbleScale = 7;
+var chartGround;
+var bubbleGround;
+var bubbleScale;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
@@ -49,6 +49,10 @@ function setup(data){
 
   //Size
   canvasResize();  
+
+  chartGround = canvas.height - 32;
+  bubbleGround = chartGround - 100;
+  bubbleScale = 7;  
 
   canvas.addEventListener('mouseup', function(evt){
     targetValue = (targetValue == 1) ? (0):(1); 
@@ -100,8 +104,8 @@ function update(){
     value += (targetValue - value) * easingSpeed;    
     // console.log(value);
   }
-  chartBasis = map(value, 0, 1, 100, canvas.height - 200);
-  bubbleCeil = chartBasis + 32;
+
+  bubbleGround = map(value, 0, 1, 100, chartGround - 100);
   for(var i = 0; i < lineCategories.length; i++){
     lineCategories[i].update();
   }
@@ -113,9 +117,9 @@ function update(){
   world.Step(timeStep, iteration);
   // setTimeout('step(' + (cnt || 0) + ')', 10);
 
-  var ceilPosition = {x: 0, y: bubbleCeil };
-  myCeil.SetOriginPosition( ceilPosition, 0 );
-  // console.log(myCeil.m_position.y);
+  var groundPosition = {x: 0, y: bubbleGround };
+  myGround.SetOriginPosition( groundPosition, 0 );
+  // console.log(myGround.m_position.y);
   draw();
 }
 
@@ -133,7 +137,7 @@ function draw(){
     lineCategories[i].draw();
   }
 
-  //Bubbles
+  // //Bubbles
   drawWorld(world, ctx);
 
   //bubbles text
@@ -156,7 +160,7 @@ function drawMonthScale(){
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
     var month = lineCategories[0].transactionsPerDay[i].date.getMonth();
     var pos= { x: lineCategories[0].vertices[i].x,
-               y: chartBasis + 21
+               y: chartGround + 21
               }
     if(month != prevMonth || prevMonth === 'undefined'){
       ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
