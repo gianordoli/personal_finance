@@ -30,6 +30,7 @@ var lineCategories;
 var bubbleCategories;
 var firstDay, lastDay;
 var maxAmount;
+var maxAmountAday;
 
 
 /*------------------- EASING ------------------*/
@@ -40,8 +41,8 @@ var easingSpeed = 0.05;
 
 /*------------------- VISUALS -----------------*/
 var chartBasis = 100;
-var bubbleCeil = chartBasis + 32;
-var bubbleScale = 6;
+// var bubbleCeil = chartBasis + 32;
+var bubbleScale = 8;
 var margin = 20;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
@@ -72,12 +73,17 @@ function setup(data){
   maxAmount = getMaxAmount('debit');
 
   //Lines
-  lineCategories = extractLineCategories(activity, 'debit');
-  for(var i = 0; i < lineCategories.length; i++){
-    lineCategories[i].setColor(lineCategories, i);
-    lineCategories[i].setTransactionsPerDay();
-    lineCategories[i].setPos();
-  }
+    lineCategories = extractLineCategories(activity, 'debit');
+    for(var i = 0; i < lineCategories.length; i++){
+      lineCategories[i].setColor(lineCategories, i);
+      lineCategories[i].setTransactionsPerDay();
+    }
+
+    maxAmountAday = getMaxAmountAday(lineCategories);  
+
+    for(var i = 0; i < lineCategories.length; i++){
+      lineCategories[i].setPos(lineCategories, i);
+    }
 
   //Bubbles
   bubbleCategories = extractBubbleCategories(activity, 'debit');
@@ -100,24 +106,26 @@ function update(){
   //Easing
   if(Math.abs(targetValue - value) > 0.0005){
     value += (targetValue - value) * easingSpeed;    
-    // console.log(value);
-  }
-  chartBasis = map(value, 0, 1, 100, canvas.height - 200);
-  bubbleCeil = chartBasis + 32;
-  for(var i = 0; i < lineCategories.length; i++){
-    lineCategories[i].update();
+    // console.log(value); 
   }
 
-  var stepping = false;
-  var timeStep = 2/60;
-  var iteration = 1;
+    //line graph
+    chartBasis = map(value, 0, 1, 100, canvas.height - 300);
+    // bubbleCeil = chartBasis + 32;
+    for(var i = 0; i < lineCategories.length; i++){
+      lineCategories[i].update(lineCategories, i);
+    }
 
-  world.Step(timeStep, iteration);
-  // setTimeout('step(' + (cnt || 0) + ')', 10);
+    //Box 2D
+    var stepping = false;
+    var timeStep = 2/60;
+    var iteration = 1;
+    world.Step(timeStep, iteration);
+    // setTimeout('step(' + (cnt || 0) + ')', 10);
+    // var ceilPosition = {x: 0, y: bubbleCeil };
+    // myCeil.SetOriginPosition( ceilPosition, 0 );
+    // console.log(myCeil.m_position.y);     
 
-  var ceilPosition = {x: 0, y: bubbleCeil };
-  myCeil.SetOriginPosition( ceilPosition, 0 );
-  // console.log(myCeil.m_position.y);
   draw();
 }
 
@@ -125,13 +133,17 @@ function draw(){
   // console.log('called draw');
   //Erasing the background
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = 'black';
-  ctx.strokeRect(0, 0, canvas.width, canvas.height);
+  //Background
+  ctx.fillStyle = parseHslaColor(0, 0, 15, 1);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
   // lineCategories[12].draw();
 
   //Lines
-  for(var i = 0; i < lineCategories.length; i++){
+  // for(var i = 0; i < lineCategories.length; i++){
+  //   lineCategories[i].draw();
+  // }
+  for(var i = lineCategories.length - 1; i > 0 ; i--){
     lineCategories[i].draw();
   }
 
@@ -146,13 +158,24 @@ function draw(){
   //Months
   drawMonthScale();
 
+  //Frame
+  ctx.strokeStyle = 'black';
+  ctx.strokeRect(0, 0, canvas.width, canvas.height);  
+
   request = requestAnimFrame(update);   
 }
 
 function drawMonthScale(){
+
+  ctx.fillStyle = 'white';
+  // ctx.moveTo(margin, chartBasis);
+  // ctx.lineTo(canvas.width - margin, chartBasis);
+  ctx.fillRect(margin, chartBasis, canvas.width - 2*margin, 1);
+  // ctx.stroke();
+
   //months
   var prevMonth;
-  ctx.fillStyle = 'gray';
+  ctx.fillStyle = 'white';
   ctx.textAlign = 'left';  
   ctx.font = '400 21px Raleway';
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
@@ -164,7 +187,7 @@ function drawMonthScale(){
       ctx.fillText(monthNames[month], pos.x + 10, pos.y);  
       prevMonth = month;
     }
-  } 
+  }
 }
 
 
@@ -181,8 +204,38 @@ function canvasResize(){
 } 
 
 function setColorCategory(myArray, i){
-  var hue = map(i, 0, myArray.length, 0, 360);
-  this.color = parseHslaColor(hue, 100, 50, 0.8);
+  var hue = map(i, 0, myArray.length, 360, 0);
+  var brightness = 50;
+  var saturation = 100;
+  // if(i % 2 == 0){
+  // if(200 < hue && hue < 360){
+  //   brightness = 70;  
+  // }
+  // if(200 < hue && hue < 300){
+  //   brightness = 70;  
+  // }
+
+  // if(50 < hue && hue < 180){
+  //   brightness = map(hue, 50, 180, 30, 50);  
+  // }
+
+  this.color = parseHslaColor(hue, saturation, brightness, 0.8);
+}
+
+var getMaxAmountAday = function(myArray){
+  var max = 0;
+
+  for(var j = 0; j < myArray[0].transactionsPerDay.length; j++){
+    var sum = 0;
+    for(var i = 0; i < myArray.length; i++){
+      sum += myArray[i].transactionsPerDay[j].amount;
+    }
+    if(sum > max){
+      max = sum;
+    }
+  }
+  console.log(max); 
+  return max;      
 }
 
 var getMaxAmount = function(filter){

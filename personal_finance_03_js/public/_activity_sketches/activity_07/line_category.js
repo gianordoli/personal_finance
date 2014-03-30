@@ -14,9 +14,17 @@ function initLineCategory(obj, description, type, transaction){
   obj.draw = drawLineCategory;
 }
 
-function updateLineCategory(){
+function updateLineCategory(myArray, index){
   for(var i = 0; i < this.vertices.length; i++){
-    this.vertices[i].y = map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50);
+
+    var prevSum = 0;
+    for(var j = 0; j < index; j++){
+      prevSum += myArray[j].transactionsPerDay[i].amount;
+    }
+    prevSum += this.transactionsPerDay[i].amount;
+
+    // this.vertices[i].y = map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50);
+    this.vertices[i].y = map(prevSum, 0, maxAmountAday, chartBasis, 50);
   }
 }
 
@@ -24,16 +32,17 @@ function drawLineCategory(){
   // console.log('called drawLineCategory()');
   ctx.beginPath();
 
-  var offset = 10;
-  
+  var offset = 15;
+  ctx.moveTo(margin, chartBasis);
   for(var i = 0; i < this.vertices.length - 1; i++){
-    ctx.moveTo(this.vertices[i].x, this.vertices[i].y);    
+    ctx.lineTo(this.vertices[i].x, this.vertices[i].y);      
     ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
                       this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
                       this.vertices[i + 1].x, this.vertices[i + 1].y);
   }
-  ctx.strokeStyle = this.color;
-  ctx.stroke();
+  ctx.lineTo(margin, chartBasis);
+  ctx.fillStyle = this.color;
+  ctx.fill();
 }
 
 function setTransactionsPerDayLineCategory(){
@@ -64,14 +73,25 @@ function setTransactionsPerDayLineCategory(){
   this.transactionsPerDay = transactionsPerDay;
 }
 
-function setPosLineCategory(){
+function setPosLineCategory(myArray, index){
   //3. Setting vertices positions
   var vertices = [];
   for(var i = 0; i < this.transactionsPerDay.length; i++){
+    // console.log('---------------------------------------');
+    var prevSum = 0;
+    for(var j = 0; j < index; j++){
+      // console.log(myArray[j].transactionsPerDay[i].amount);
+      prevSum += myArray[j].transactionsPerDay[i].amount;
+    }
+    prevSum += this.transactionsPerDay[i].amount;
+    // console.log(prevSum);
+
     var vertex = {   x: map(daysInBetween(firstDay, this.transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
                          margin, canvas.width - margin),
-                     y: map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
+                     // y: map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
+                     // y: map(prevSum, 0, maxAmountAday, chartBasis, 50)
+                     y: 0
                  };
     // console.log(pos);
     vertices.push(vertex);

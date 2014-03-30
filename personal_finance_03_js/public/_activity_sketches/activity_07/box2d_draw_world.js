@@ -27,10 +27,17 @@ function drawShape(shape, context) {
 			pos = circle.m_position;
 			color = circle.m_color;
 			
-			circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 25);
+			circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 40);
 
 			var r = circle.m_radius;
-			var segments = 16.0;
+
+			//Creating a sort of 'halo' to prevent text overlapping
+			// if(targetValue == 1){
+				r = circle.m_radius - 7;
+			// }
+			// var segments = 16.0;
+			var segments;
+			segments = Math.floor(r);	//Changing circle 'resolution' according to radius
 			var theta = 0.0;
 			var dtheta = 2.0 * Math.PI / segments;
 			// draw circle
@@ -69,7 +76,7 @@ function drawShape(shape, context) {
 			}
 			context.lineTo(tV.x, tV.y);
 		}
-		ctx.fillStyle = 'white';
+		context.fillStyle = parseHslaColor(0, 100, 100, 0);
 		context.fill();
 
 		break;

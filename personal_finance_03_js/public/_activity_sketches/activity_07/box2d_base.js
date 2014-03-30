@@ -1,4 +1,4 @@
-var myCeil;
+// var myCeil;
 
 //1. Create World
 function createWorld() {
@@ -15,7 +15,8 @@ function createWorld() {
 	//Boundaries
 	createBox(world, 0, 0, margin, canvas.height);
 	createBox(world, canvas.width,0, margin, canvas.height);	
-	myCeil = createBox(world, canvas.width/2, bubbleCeil, canvas.width, 1);
+	// myCeil = createBox(world, canvas.width/2, bubbleCeil, canvas.width, 1);
+	createBox(world, canvas.width/2, 0, canvas.width, 1);
 
 	return world;
 }
@@ -36,7 +37,7 @@ function createBall(world, index, pos, radius, color) {
 	var ballSd = new b2CircleDef();
 	ballSd.density = 5;
 	ballSd.radius = radius;
-	ballSd.restitution = 0.7;
+	ballSd.restitution = 0.2;
 	ballSd.friction = 0;
 	ballSd.color = color;
 	ballSd.index = index;
