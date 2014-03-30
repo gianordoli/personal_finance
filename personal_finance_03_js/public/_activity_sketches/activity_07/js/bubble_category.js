@@ -31,7 +31,8 @@ function drawBubbleCategory(){
   // ctx.arc(this.pos.x, this.pos.y, this.radius, 0, Math.PI*2, false);
   // ctx.fill();
   var message = this.description;
-  ctx.fillStyle = 'white';
+  // ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.font = '400 16px Raleway';
   ctx.textAlign = 'center';  
   ctx.textBaseline = 'middle';  
@@ -56,10 +57,10 @@ function checkMouseBubleCategory(index){
     // console.log(this.description);
     
     //Deactive all
-    // for(var i = 0; i < bubbleCategories.length; i++){
-    //   bubbleCategories[i].isSelected = false;
-    //   lineCategories[i].isSelected = false;
-    // }
+    for(var i = 0; i < bubbleCategories.length; i++){
+      bubbleCategories[i].isSelected = false;
+      lineCategories[i].isSelected = false;
+    }
 
     this.isSelected = (this.isSelected) ? (0):(1);
     // console.log(this.isSelected);

@@ -35,20 +35,28 @@ function updateLineCategory(myArray, index){
 
 function drawLineCategory(){
   // console.log('called drawLineCategory()');
+  // console.log(this.vertices[0]);
+  // console.log(this.vertices[this.vertices.length - 1].x);
+  ctx.fillStyle = 'black';
+
   if(this.isSelected){
     ctx.beginPath();
 
-    var offset = 15;
-    ctx.moveTo(margin, chartBasis);
+    // ctx.moveTo(0, chartBasis);
+    // ctx.bezierCurveTo(offset, chartBasis,
+    //                     this.vertices[0].x - offset, this.vertices[0].y,
+    //                     this.vertices[0].x, this.vertices[0].y);   
+
     for(var i = 0; i < this.vertices.length - 1; i++){
-      ctx.lineTo(this.vertices[i].x, this.vertices[i].y);      
-      ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
-                        this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
-                        this.vertices[i + 1].x, this.vertices[i + 1].y);
+      // ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
+      //                   this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
+      //                   this.vertices[i + 1].x, this.vertices[i + 1].y);        
+      ctx.fillText(i, this.vertices[i].x, this.vertices[i].y);
     }
-    ctx.lineTo(margin, chartBasis);
-    ctx.fillStyle = this.color;
-    ctx.fill();
+
+    // ctx.lineTo(canvas.width - margin, chartBasis);
+    // ctx.fillStyle = this.color;
+    // ctx.fill();
   }
   // else{
   //   console.log('not selected');
@@ -65,13 +73,17 @@ function setTransactionsPerDayLineCategory(){
     var obj = new Object();
     obj.date = new Date(firstDay.getFullYear(), firstDay.getMonth(), firstDay.getDate()+i);
     obj.amount = 0;
+    // console.log(obj.date.toDateString());
     transactionsPerDay.push(obj);
   }  
 
   //2. Calculate total amount per day
   for(var i = 0; i < transactionsPerDay.length; i++){
+    // console.log('Date: ' + transactionsPerDay[i].date.toDateString());
     for(var j = 0; j < this.transactions.length; j++){
+      // console.log('this amount: ' + this.transactions[j].amount);
       if(transactionsPerDay[i].date.toDateString() == this.transactions[j].date.toDateString()){
+        // console.log('sum!');
         transactionsPerDay[i].amount += this.transactions[j].amount;
       }
     }
@@ -97,10 +109,14 @@ function setPosLineCategory(myArray, index){
   //3. Setting vertices positions
   var vertices = [];
   for(var i = 0; i < this.transactionsPerDay.length; i++){
+    console.log(daysInBetween(firstDay, this.transactionsPerDay[i].date));
+    // console.log(this.transactionsPerDay[i].date.toDateString());
+    // console.log(firstDay.toDateString());
+    console.log(daysInBetween(this.transactionsPerDay[i].date, firstDay));
     // console.log('---------------------------------------');
     var vertex = {   x: map(daysInBetween(firstDay, this.transactionsPerDay[i].date),
-                         0, daysInBetween(firstDay, lastDay) - 1,
-                         margin, canvas.width - margin),
+                         0, daysInBetween(firstDay, lastDay),
+                         margin + offset, canvas.width - margin - offset),
                      // y: map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
                      // y: map(prevSum, 0, maxAmountAday, chartBasis, 50)
                      y: 0

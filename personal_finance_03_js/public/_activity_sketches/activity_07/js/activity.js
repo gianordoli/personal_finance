@@ -44,6 +44,7 @@ var chartBasis = 100;
 // var bubbleCeil = chartBasis + 32;
 var bubbleScale = 8;
 var margin = 20;
+var offset;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
@@ -76,7 +77,8 @@ function setup(data){
       }
 
       maxAmountAday = getMaxAmountAday(lineCategories);  
-
+      offset = ((canvas.width - 2*margin)/lineCategories.length)/2;  
+      
       for(var i = 0; i < lineCategories.length; i++){
         lineCategories[i].setPos(lineCategories, i);
       }
@@ -98,6 +100,11 @@ function setup(data){
 
   //Listener
   canvas.addEventListener('mouseup', function(evt){
+    getMousePos(evt);
+    bubbleSelect();
+  }, false);    
+
+  canvas.addEventListener('touchend', function(evt){
     getMousePos(evt);
     bubbleSelect();
   }, false);    
@@ -138,7 +145,8 @@ function draw(){
   //Erasing the background
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   //Background
-  ctx.fillStyle = parseHslaColor(0, 0, 15, 1);
+  // ctx.fillStyle = parseHslaColor(0, 0, 15, 1);
+  ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
   // lineCategories[12].draw();
@@ -163,8 +171,8 @@ function draw(){
   drawMonthScale();
 
   //Frame
-  ctx.strokeStyle = 'black';
-  ctx.strokeRect(0, 0, canvas.width, canvas.height);  
+  // ctx.strokeStyle = 'white';
+  // ctx.strokeRect(0, 0, canvas.width, canvas.height);  
 
   request = requestAnimFrame(update);   
 }
@@ -192,7 +200,8 @@ function bubbleSelect(){
 
 function drawMonthScale(){
 
-  ctx.fillStyle = 'white';
+  // ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   // ctx.moveTo(margin, chartBasis);
   // ctx.lineTo(canvas.width - margin, chartBasis);
   ctx.fillRect(margin, chartBasis, canvas.width - 2*margin, 1);
@@ -200,7 +209,8 @@ function drawMonthScale(){
 
   //months
   var prevMonth;
-  ctx.fillStyle = 'white';
+  // ctx.fillStyle = 'white';
+  ctx.fillStyle = 'black';
   ctx.textAlign = 'left';  
   ctx.font = '400 21px Raleway';
   for(var i = 0; i < lineCategories[0].transactionsPerDay.length; i++){
