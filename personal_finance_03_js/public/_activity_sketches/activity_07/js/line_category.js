@@ -42,21 +42,26 @@ function drawLineCategory(){
   if(this.isSelected){
     ctx.beginPath();
 
-    // ctx.moveTo(0, chartBasis);
-    // ctx.bezierCurveTo(offset, chartBasis,
-    //                     this.vertices[0].x - offset, this.vertices[0].y,
-    //                     this.vertices[0].x, this.vertices[0].y);   
+    //First point
+    ctx.moveTo(margin, chartBasis);
+    ctx.bezierCurveTo(margin + offset, chartBasis,
+                      this.vertices[0].x - offset, this.vertices[0].y,
+                      this.vertices[0].x, this.vertices[0].y);   
 
     for(var i = 0; i < this.vertices.length - 1; i++){
-      // ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
-      //                   this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
-      //                   this.vertices[i + 1].x, this.vertices[i + 1].y);        
-      ctx.fillText(i, this.vertices[i].x, this.vertices[i].y);
+      ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
+                        this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
+                        this.vertices[i + 1].x, this.vertices[i + 1].y);        
+      // ctx.fillText(i, this.vertices[i].x, this.vertices[i].y);
     }
 
-    // ctx.lineTo(canvas.width - margin, chartBasis);
-    // ctx.fillStyle = this.color;
-    // ctx.fill();
+    //Last point
+    ctx.bezierCurveTo(this.vertices[this.vertices.length - 1].x + offset, this.vertices[this.vertices.length - 1].y,
+                      canvas.width - margin - offset, chartBasis,
+                      canvas.width - margin, chartBasis);   
+    ctx.lineTo(canvas.width - margin, chartBasis);
+    ctx.fillStyle = this.color;
+    ctx.fill();
   }
   // else{
   //   console.log('not selected');
@@ -109,19 +114,12 @@ function setPosLineCategory(myArray, index){
   //3. Setting vertices positions
   var vertices = [];
   for(var i = 0; i < this.transactionsPerDay.length; i++){
-    console.log(daysInBetween(firstDay, this.transactionsPerDay[i].date));
-    // console.log(this.transactionsPerDay[i].date.toDateString());
-    // console.log(firstDay.toDateString());
-    console.log(daysInBetween(this.transactionsPerDay[i].date, firstDay));
     // console.log('---------------------------------------');
-    var vertex = {   x: map(daysInBetween(firstDay, this.transactionsPerDay[i].date),
-                         0, daysInBetween(firstDay, lastDay),
+    var vertex = { x: map(i,
+                         0, this.transactionsPerDay.length - 1,
                          margin + offset, canvas.width - margin - offset),
-                     // y: map(this.transactionsPerDay[i].amount, 0, maxAmount, chartBasis, 50)
-                     // y: map(prevSum, 0, maxAmountAday, chartBasis, 50)
-                     y: 0
-                 };
-    // console.log(pos);
+                   y: 0 };
+
     vertices.push(vertex);
   }
   this.vertices = vertices;
