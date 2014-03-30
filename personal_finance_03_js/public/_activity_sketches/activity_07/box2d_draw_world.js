@@ -27,8 +27,9 @@ function drawShape(shape, context) {
 			pos = circle.m_position;
 			color = circle.m_color;
 			
-			circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 40);
-
+			bubbleCategories[index].update(pos);
+			// circle.m_radius = map(value, 0, 1, bubbleCategories[index].radius, 40);
+			circle.m_radius = bubbleCategories[index].radius;
 			var r = circle.m_radius;
 
 			//Creating a sort of 'halo' to prevent text overlapping
@@ -60,7 +61,6 @@ function drawShape(shape, context) {
 		context.fillStyle = color;
 		context.fill();
 
-		bubbleCategories[index].update(pos);
 		// console.log(index);
 
 		break;

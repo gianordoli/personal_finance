@@ -28,6 +28,7 @@ function setSizeBubbleCategory(){
 }
 
 function updateBubbleCategory(pos){
+  this.radius = map(value, 0, 1, getRadiusFromArea(this.totalAmount)*bubbleScale, 40);
   this.pos = pos;
 }
 
