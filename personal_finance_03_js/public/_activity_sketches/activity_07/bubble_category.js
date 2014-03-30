@@ -37,11 +37,17 @@ function drawBubbleCategory(){
   ctx.textBaseline = 'middle';  
   if(message.indexOf(' ') != -1){
     var newMessage = message.substr(0, message.indexOf(' '));
-    ctx.fillText(newMessage, this.pos.x, this.pos.y - 8);
+    ctx.fillText(newMessage, this.pos.x, this.pos.y - 16);
     newMessage = message.substr(message.indexOf(' ') + 1);
-    ctx.fillText(newMessage, this.pos.x, this.pos.y + 8);
+    ctx.fillText(newMessage, this.pos.x, this.pos.y);
   }else{
     ctx.fillText(this.description, this.pos.x, this.pos.y);  
+  }
+
+  // if(targetValue == 0 && this.isSelected){
+  if(this.isSelected){  
+    ctx.font = '600 16px Raleway';
+    ctx.fillText('$' + Math.round(this.totalAmount), this.pos.x, this.pos.y + 16);  
   }
 }
 
@@ -50,10 +56,10 @@ function checkMouseBubleCategory(index){
     // console.log(this.description);
     
     //Deactive all
-    for(var i = 0; i < bubbleCategories.length; i++){
-      bubbleCategories[i].isSelected = false;
-      lineCategories[i].isSelected = false;
-    }
+    // for(var i = 0; i < bubbleCategories.length; i++){
+    //   bubbleCategories[i].isSelected = false;
+    //   lineCategories[i].isSelected = false;
+    // }
 
     this.isSelected = (this.isSelected) ? (0):(1);
     // console.log(this.isSelected);
@@ -68,10 +74,10 @@ function setColorBubbleCategory(myArray, i){
   var hue = map(i, 0, myArray.length, 360, 0);
   var brightness = 50;
   var saturation = 100;
-  // if(i % 2 == 0){
+  if(i % 2 == 0){
   // if(200 < hue && hue < 360){
-  //   brightness = 70;  
-  // }
+    brightness = 80;  
+  }
   // if(200 < hue && hue < 300){
   //   brightness = 70;  
   // }

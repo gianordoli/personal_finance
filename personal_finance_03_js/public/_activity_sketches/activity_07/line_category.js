@@ -87,6 +87,9 @@ function setColorLineCategory(myArray, i){
   var hue = map(i, 0, myArray.length, 360, 0);
   var brightness = 50;
   var saturation = 100;
+  if(i % 2 == 0){
+    brightness = 80;
+  }
   this.color = parseHslaColor(hue, saturation, brightness, 1);
 }
 
