@@ -155,7 +155,7 @@ function draw(){
   // for(var i = 0; i < lineCategories.length; i++){
   //   lineCategories[i].draw();
   // }
-  for(var i = lineCategories.length - 1; i > 0 ; i--){
+  for(var i = lineCategories.length - 1; i >= 0 ; i--){
     lineCategories[i].draw();
   }
 
@@ -253,7 +253,7 @@ var getMaxAmountAday = function(myArray){
       max = sum;
     }
   }
-  console.log(max); 
+  // console.log(max); 
   return max;      
 }
 

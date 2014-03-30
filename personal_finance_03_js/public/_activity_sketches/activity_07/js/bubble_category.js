@@ -55,12 +55,13 @@ function drawBubbleCategory(){
 function checkMouseBubleCategory(index){
   if(dist(mousePos.x, mousePos.y, this.pos.x, this.pos.y) < this.radius){
     // console.log(this.description);
+    // console.log(index);
     
     //Deactive all
-    for(var i = 0; i < bubbleCategories.length; i++){
-      bubbleCategories[i].isSelected = false;
-      lineCategories[i].isSelected = false;
-    }
+    // for(var i = 0; i < bubbleCategories.length; i++){
+    //   bubbleCategories[i].isSelected = false;
+    //   lineCategories[i].isSelected = false;
+    // }
 
     this.isSelected = (this.isSelected) ? (0):(1);
     // console.log(this.isSelected);
