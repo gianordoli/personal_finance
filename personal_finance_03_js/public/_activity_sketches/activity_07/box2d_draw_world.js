@@ -58,9 +58,12 @@ function drawShape(shape, context) {
 			context.lineTo(pos2.x, pos2.y);
 		}
 
-		context.fillStyle = color;
-		context.fill();
-
+		if(bubbleCategories[index].isSelected){
+			context.fillStyle = color;
+		}else{
+			context.fillStyle = parseHslaColor(0, 0, 50, 0.5);
+		}
+		context.fill();			
 		// console.log(index);
 
 		break;

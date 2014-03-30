@@ -20,7 +20,7 @@ socket.on('write', function(data) {
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 var canvasPosition;
-var mousePos;
+var mousePos = new Object();
 var world;
 
 
@@ -51,10 +51,6 @@ function setup(data){
 
   //Size
   canvasResize();  
-
-  canvas.addEventListener('mouseup', function(evt){
-    targetValue = (targetValue == 1) ? (0):(1); 
-  }, false);  
 
   //Data
   activity = new Array();
@@ -98,6 +94,17 @@ function setup(data){
   for(var i = 0; i < bubbleCategories.length; i++){
     createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
   }  
+
+  canvas.addEventListener('mouseup', function(evt){
+    getMousePos(evt);
+    if(mousePos.y < chartBasis){
+      targetValue = (targetValue == 1) ? (0):(1);   
+    }else{
+      for(var i = 0; i < bubbleCategories.length; i++){
+        bubbleCategories[i].checkMouse();
+      }
+    }
+  }, false);    
 
   update();
 }
@@ -330,4 +337,9 @@ var extractBubbleCategories = function(myArray, filter){
   //   console.log('[' + i + ']' + categoriesList[i].category);
   // }
   return categoriesList;
+}
+
+function getMousePos(evt){
+  mousePos.x = evt.clientX - canvasPosition.left;
+  mousePos.y = evt.clientY - canvasPosition.top;
 }

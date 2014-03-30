@@ -5,6 +5,7 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.description = description;
   obj.totalAmount = totalAmount;
   obj.type = type;
+  obj.isSelected = true;
 
   obj.pos = new Object();
   obj.radius = 0;
@@ -12,9 +13,17 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.setColor = setColorCategory;
   obj.setPos = setPosBubbleCategory;
   obj.setSize = setSizeBubbleCategory;
+  obj.checkMouse = checkMouseBubleCategory;
 
   obj.update = updateBubbleCategory;
   obj.draw = drawBubbleCategory;
+}
+
+function checkMouseBubleCategory(){
+  if(dist(mousePos.x, mousePos.y, this.pos.x, this.pos.y) < this.radius){
+    // console.log(this.description);
+    this.isSelected = (this.isSelected) ? (0):(1);   
+  }
 }
 
 function setPosBubbleCategory(){
