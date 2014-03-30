@@ -19,23 +19,6 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.draw = drawBubbleCategory;
 }
 
-function checkMouseBubleCategory(){
-  if(dist(mousePos.x, mousePos.y, this.pos.x, this.pos.y) < this.radius){
-    // console.log(this.description);
-    this.isSelected = (this.isSelected) ? (0):(1);   
-  }
-}
-
-function setPosBubbleCategory(){
-  this.pos = { x: this.radius + margin + Math.random() * (canvas.width - 2*(this.radius + margin)),
-               // y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*(this.radius + margin)) };
-               y: Math.random() * (canvas.height - 2*(this.radius + margin)) };
-}
-
-function setSizeBubbleCategory(){
-  this.radius = getRadiusFromArea(this.totalAmount)*bubbleScale;
-}
-
 function updateBubbleCategory(pos){
   this.radius = map(value, 0, 1, getRadiusFromArea(this.totalAmount)*bubbleScale, 40);
   this.pos = pos;
@@ -60,4 +43,24 @@ function drawBubbleCategory(){
   }else{
     ctx.fillText(this.description, this.pos.x, this.pos.y);  
   }
+}
+
+function checkMouseBubleCategory(index){
+  if(dist(mousePos.x, mousePos.y, this.pos.x, this.pos.y) < this.radius){
+    // console.log(this.description);
+    this.isSelected = (this.isSelected) ? (0):(1);
+    // console.log(this.isSelected);
+    lineCategories[index].isSelected = (lineCategories[index].isSelected) ? (0):(1);
+    console.log(lineCategories[index].isSelected);
+  }
+}
+
+function setPosBubbleCategory(){
+  this.pos = { x: this.radius + margin + Math.random() * (canvas.width - 2*(this.radius + margin)),
+               // y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*(this.radius + margin)) };
+               y: Math.random() * (canvas.height - 2*(this.radius + margin)) };
+}
+
+function setSizeBubbleCategory(){
+  this.radius = getRadiusFromArea(this.totalAmount)*bubbleScale;
 }

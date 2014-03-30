@@ -69,43 +69,40 @@ function setup(data){
   maxAmount = getMaxAmount('debit');
 
   //Lines
-    lineCategories = extractLineCategories(activity, 'debit');
-    for(var i = 0; i < lineCategories.length; i++){
-      lineCategories[i].setColor(lineCategories, i);
-      lineCategories[i].setTransactionsPerDay();
-    }
+  lineCategories = extractLineCategories(activity, 'debit');
+      for(var i = 0; i < lineCategories.length; i++){
+        lineCategories[i].setColor(lineCategories, i);
+        lineCategories[i].setTransactionsPerDay();
+      }
 
-    maxAmountAday = getMaxAmountAday(lineCategories);  
+      maxAmountAday = getMaxAmountAday(lineCategories);  
 
-    for(var i = 0; i < lineCategories.length; i++){
-      lineCategories[i].setPos(lineCategories, i);
-    }
+      for(var i = 0; i < lineCategories.length; i++){
+        lineCategories[i].setPos(lineCategories, i);
+      }
+
 
   //Bubbles
   bubbleCategories = extractBubbleCategories(activity, 'debit');
-  for(var i = 0; i < bubbleCategories.length; i++){
-    bubbleCategories[i].setColor(bubbleCategories, i);
-    bubbleCategories[i].setSize();
-    bubbleCategories[i].setPos();
-  }
+      for(var i = 0; i < bubbleCategories.length; i++){
+        bubbleCategories[i].setColor(bubbleCategories, i);
+        bubbleCategories[i].setSize();
+        bubbleCategories[i].setPos();
+      }
 
-  //Box 2D
-  world = createWorld();
-  for(var i = 0; i < bubbleCategories.length; i++){
-    createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
+      //Box 2D
+      world = createWorld();
+      for(var i = 0; i < bubbleCategories.length; i++){
+        createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
   }  
 
+  //Listener
   canvas.addEventListener('mouseup', function(evt){
     getMousePos(evt);
-    if(mousePos.y < chartBasis){
-      targetValue = (targetValue == 1) ? (0):(1);   
-    }else{
-      for(var i = 0; i < bubbleCategories.length; i++){
-        bubbleCategories[i].checkMouse();
-      }
-    }
+    bubbleSelect();
   }, false);    
 
+  //Start sketch
   update();
 }
 
@@ -170,6 +167,24 @@ function draw(){
   ctx.strokeRect(0, 0, canvas.width, canvas.height);  
 
   request = requestAnimFrame(update);   
+}
+
+function bubbleSelect(){
+  //Change from bubble to chart
+  if(mousePos.y < chartBasis){
+    targetValue = (targetValue == 1) ? (0):(1);   
+
+  //Select bubbles
+  }else{
+    for(var i = 0; i < bubbleCategories.length; i++){
+      bubbleCategories[i].checkMouse(i);
+    }
+  }
+
+  //Reload chart
+  for(var i = 0; i < bubbleCategories.length; i++){
+    lineCategories[i].setTransactionsPerDay();
+  }
 }
 
 function drawMonthScale(){

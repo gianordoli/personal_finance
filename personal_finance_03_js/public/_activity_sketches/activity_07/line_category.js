@@ -7,6 +7,8 @@ function initLineCategory(obj, description, type, transaction){
   obj.transactions = [];  //amount, date
   obj.transactions.push(transaction);
 
+  obj.isSelected = true;
+
   obj.setTransactionsPerDay = setTransactionsPerDayLineCategory;
   obj.setPos = setPosLineCategory;
   obj.setColor = setColorCategory;
@@ -30,19 +32,23 @@ function updateLineCategory(myArray, index){
 
 function drawLineCategory(){
   // console.log('called drawLineCategory()');
-  ctx.beginPath();
+  if(this.isSelected){
+    ctx.beginPath();
 
-  var offset = 15;
-  ctx.moveTo(margin, chartBasis);
-  for(var i = 0; i < this.vertices.length - 1; i++){
-    ctx.lineTo(this.vertices[i].x, this.vertices[i].y);      
-    ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
-                      this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
-                      this.vertices[i + 1].x, this.vertices[i + 1].y);
+    var offset = 15;
+    ctx.moveTo(margin, chartBasis);
+    for(var i = 0; i < this.vertices.length - 1; i++){
+      ctx.lineTo(this.vertices[i].x, this.vertices[i].y);      
+      ctx.bezierCurveTo(this.vertices[i].x + offset, this.vertices[i].y,
+                        this.vertices[i + 1].x - offset, this.vertices[i + 1].y,
+                        this.vertices[i + 1].x, this.vertices[i + 1].y);
+    }
+    ctx.lineTo(margin, chartBasis);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+  }else{
+    console.log('not selected');
   }
-  ctx.lineTo(margin, chartBasis);
-  ctx.fillStyle = this.color;
-  ctx.fill();
 }
 
 function setTransactionsPerDayLineCategory(){
