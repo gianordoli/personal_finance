@@ -71,7 +71,7 @@ function setTransactionsPerDayLineCategory(){
   //2. Calculate total amount per day
   for(var i = 0; i < transactionsPerDay.length; i++){
     for(var j = 0; j < this.transactions.length; j++){
-      if(transactionsPerDay[i].date.valueOf() == this.transactions[j].date.valueOf()){
+      if(transactionsPerDay[i].date.toDateString() == this.transactions[j].date.toDateString()){
         transactionsPerDay[i].amount += this.transactions[j].amount;
       }
     }
