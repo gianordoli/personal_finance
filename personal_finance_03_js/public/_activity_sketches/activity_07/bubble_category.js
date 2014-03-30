@@ -10,7 +10,7 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.pos = new Object();
   obj.radius = 0;
 
-  obj.setColor = setColorCategory;
+  obj.setColor = setColorBubbleCategory;
   obj.setPos = setPosBubbleCategory;
   obj.setSize = setSizeBubbleCategory;
   obj.checkMouse = checkMouseBubleCategory;
@@ -48,11 +48,39 @@ function drawBubbleCategory(){
 function checkMouseBubleCategory(index){
   if(dist(mousePos.x, mousePos.y, this.pos.x, this.pos.y) < this.radius){
     // console.log(this.description);
+    
+    //Deactive all
+    for(var i = 0; i < bubbleCategories.length; i++){
+      bubbleCategories[i].isSelected = false;
+      lineCategories[i].isSelected = false;
+    }
+
     this.isSelected = (this.isSelected) ? (0):(1);
     // console.log(this.isSelected);
+
+    //Deactive corresponding line too
     lineCategories[index].isSelected = (lineCategories[index].isSelected) ? (0):(1);
-    console.log(lineCategories[index].isSelected);
+    // console.log(lineCategories[index].isSelected);
   }
+}
+
+function setColorBubbleCategory(myArray, i){
+  var hue = map(i, 0, myArray.length, 360, 0);
+  var brightness = 50;
+  var saturation = 100;
+  // if(i % 2 == 0){
+  // if(200 < hue && hue < 360){
+  //   brightness = 70;  
+  // }
+  // if(200 < hue && hue < 300){
+  //   brightness = 70;  
+  // }
+
+  // if(50 < hue && hue < 180){
+  //   brightness = map(hue, 50, 180, 30, 50);  
+  // }
+
+  this.color = parseHslaColor(hue, saturation, brightness, 0.8);
 }
 
 function setPosBubbleCategory(){

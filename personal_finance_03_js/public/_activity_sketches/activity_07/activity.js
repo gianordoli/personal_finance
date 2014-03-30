@@ -181,9 +181,12 @@ function bubbleSelect(){
     }
   }
 
-  //Reload chart
+  //Update maximum amount a day
+  maxAmountAday = getMaxAmountAday(lineCategories);
+
+  //Update line chart vertices
   for(var i = 0; i < bubbleCategories.length; i++){
-    lineCategories[i].setTransactionsPerDay();
+    lineCategories[i].setPos(lineCategories, i);
   }
 }
 
@@ -225,32 +228,16 @@ function canvasResize(){
   // console.log(canvasPosition);
 } 
 
-function setColorCategory(myArray, i){
-  var hue = map(i, 0, myArray.length, 360, 0);
-  var brightness = 50;
-  var saturation = 100;
-  // if(i % 2 == 0){
-  // if(200 < hue && hue < 360){
-  //   brightness = 70;  
-  // }
-  // if(200 < hue && hue < 300){
-  //   brightness = 70;  
-  // }
-
-  // if(50 < hue && hue < 180){
-  //   brightness = map(hue, 50, 180, 30, 50);  
-  // }
-
-  this.color = parseHslaColor(hue, saturation, brightness, 0.8);
-}
-
 var getMaxAmountAday = function(myArray){
   var max = 0;
 
   for(var j = 0; j < myArray[0].transactionsPerDay.length; j++){
     var sum = 0;
     for(var i = 0; i < myArray.length; i++){
-      sum += myArray[i].transactionsPerDay[j].amount;
+      //Only sum up if the category is selected
+      if(myArray[i].isSelected){
+        sum += myArray[i].transactionsPerDay[j].amount;
+      }
     }
     if(sum > max){
       max = sum;

@@ -11,17 +11,20 @@ function initLineCategory(obj, description, type, transaction){
 
   obj.setTransactionsPerDay = setTransactionsPerDayLineCategory;
   obj.setPos = setPosLineCategory;
-  obj.setColor = setColorCategory;
+  obj.setColor = setColorLineCategory;
   obj.update = updateLineCategory;
   obj.draw = drawLineCategory;
 }
 
 function updateLineCategory(myArray, index){
+  //update y coordinates
   for(var i = 0; i < this.vertices.length; i++){
 
     var prevSum = 0;
     for(var j = 0; j < index; j++){
-      prevSum += myArray[j].transactionsPerDay[i].amount;
+      if(myArray[j].isSelected){
+        prevSum += myArray[j].transactionsPerDay[i].amount;
+      }
     }
     prevSum += this.transactionsPerDay[i].amount;
 
@@ -46,9 +49,10 @@ function drawLineCategory(){
     ctx.lineTo(margin, chartBasis);
     ctx.fillStyle = this.color;
     ctx.fill();
-  }else{
-    console.log('not selected');
   }
+  // else{
+  //   console.log('not selected');
+  // }
 }
 
 function setTransactionsPerDayLineCategory(){
@@ -79,19 +83,18 @@ function setTransactionsPerDayLineCategory(){
   this.transactionsPerDay = transactionsPerDay;
 }
 
+function setColorLineCategory(myArray, i){
+  var hue = map(i, 0, myArray.length, 360, 0);
+  var brightness = 50;
+  var saturation = 100;
+  this.color = parseHslaColor(hue, saturation, brightness, 1);
+}
+
 function setPosLineCategory(myArray, index){
   //3. Setting vertices positions
   var vertices = [];
   for(var i = 0; i < this.transactionsPerDay.length; i++){
     // console.log('---------------------------------------');
-    var prevSum = 0;
-    for(var j = 0; j < index; j++){
-      // console.log(myArray[j].transactionsPerDay[i].amount);
-      prevSum += myArray[j].transactionsPerDay[i].amount;
-    }
-    prevSum += this.transactionsPerDay[i].amount;
-    // console.log(prevSum);
-
     var vertex = {   x: map(daysInBetween(firstDay, this.transactionsPerDay[i].date),
                          0, daysInBetween(firstDay, lastDay) - 1,
                          margin, canvas.width - margin),
