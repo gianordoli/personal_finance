@@ -45,6 +45,7 @@ var chartBasis = 100;
 var bubbleScale = 8;
 var margin = 20;
 var offset;
+var expandBt;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(data){
@@ -68,6 +69,11 @@ function setup(data){
   lastDay = new Date(activity[0].date);
 
   maxAmount = getMaxAmount('debit');
+
+  //Button
+  var btPos = { x: 10, y: 10 };
+  expandBt = new Object();
+  initBtCategory(expandBt, 'Timeline', btPos);
 
   //Lines
   lineCategories = extractLineCategories(activity, 'debit');
@@ -102,6 +108,8 @@ function setup(data){
   canvas.addEventListener('mouseup', function(evt){
     getMousePos(evt);
     bubbleSelect();
+    expandBt.update();
+
   }, false);    
 
   canvas.addEventListener('touchend', function(evt){
@@ -149,12 +157,10 @@ function draw(){
   ctx.fillStyle = 'white';
   ctx.fillRect(0, 0, canvas.width, canvas.height);    
 
-  // lineCategories[12].draw();
+  //Button
+  expandBt.draw();
 
   //Lines
-  // for(var i = 0; i < lineCategories.length; i++){
-  //   lineCategories[i].draw();
-  // }
   for(var i = lineCategories.length - 1; i >= 0 ; i--){
     lineCategories[i].draw();
   }
@@ -179,15 +185,15 @@ function draw(){
 
 function bubbleSelect(){
   //Change from bubble to chart
-  if(mousePos.y < chartBasis){
-    targetValue = (targetValue == 1) ? (0):(1);   
+  // if(mousePos.y < chartBasis){
+    // targetValue = (targetValue == 1) ? (0):(1);   
 
   //Select bubbles
-  }else{
+  // }else{
     for(var i = 0; i < bubbleCategories.length; i++){
       bubbleCategories[i].checkMouse(i);
     }
-  }
+  // }
 
   //Update maximum amount a day
   maxAmountAday = getMaxAmountAday(lineCategories);

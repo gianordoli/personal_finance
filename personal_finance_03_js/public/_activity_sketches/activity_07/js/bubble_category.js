@@ -58,10 +58,10 @@ function checkMouseBubleCategory(index){
     // console.log(index);
     
     //Deactive all
-    // for(var i = 0; i < bubbleCategories.length; i++){
-    //   bubbleCategories[i].isSelected = false;
-    //   lineCategories[i].isSelected = false;
-    // }
+    for(var i = 0; i < bubbleCategories.length; i++){
+      bubbleCategories[i].isSelected = false;
+      lineCategories[i].isSelected = false;
+    }
 
     this.isSelected = (this.isSelected) ? (0):(1);
     // console.log(this.isSelected);
@@ -94,7 +94,8 @@ function setColorBubbleCategory(myArray, i){
 function setPosBubbleCategory(){
   this.pos = { x: this.radius + margin + Math.random() * (canvas.width - 2*(this.radius + margin)),
                // y: this.radius + bubbleCeil + Math.random() * (canvas.height - bubbleCeil - 2*(this.radius + margin)) };
-               y: Math.random() * (canvas.height - 2*(this.radius + margin)) };
+               y: this.radius + Math.random() * (canvas.height - 2*(this.radius)) };
+               // y: this.radius + Math.random() * this.radius };
 }
 
 function setSizeBubbleCategory(){
