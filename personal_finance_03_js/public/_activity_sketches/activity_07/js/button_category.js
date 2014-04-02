@@ -7,26 +7,33 @@ function initBtCategory(obj, label, pos){
   obj.pos = pos;
   obj.color = parseHslaColor(0, 0, 70, 1);
 
-  obj.isSelected = false;
-  obj.isHovered = false;
-
   obj.update = updateBtCategory;
   obj.draw = drawBtCategory;
+
+  obj.checkMouse = checkMouseBtCategory;
 }
 
 function updateBtCategory(){
+  // this.checkMouse();
+  if(this.checkMouse()){
+    this.color = parseHslaColor(0, 0, 90, 1);
+    canvas.style.cursor = 'pointer';    
+  }else{
+    this.color = parseHslaColor(0, 0, 70, 1);
+    canvas.style.cursor = 'default'; 
+  }
+}
+
+var checkMouseBtCategory = function(){
+  var isHovered = false;
   if(this.pos.x < mousePos.x && mousePos.x < this.pos.x + this.size.x &&
      this.pos.y < mousePos.y && mousePos.y < this.pos.y + this.size.y){
     // console.log(this.label);
-
-    this.color = parseHslaColor(0, 0, 90, 1);
-
-    if(mouseIsDown){
-      targetValue = (targetValue == 1) ? (0):(1);   
-    }
+    isHovered = true;
   }else{
-    this.color = parseHslaColor(0, 0, 70, 1);    
-  }
+    isHovered = false;  
+  } 
+  return isHovered; 
 }
 
 function drawBtCategory(){

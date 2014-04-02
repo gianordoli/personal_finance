@@ -32,9 +32,6 @@ var firstDay, lastDay;
 var maxAmount;
 var maxAmountAday;
 
-/*----------------- INTERACTION ---------------*/
-var mouseIsDown = false;
-
 /*------------------- EASING ------------------*/
 var value = 0;
 var targetValue = 0;
@@ -106,25 +103,21 @@ function setup(data){
         createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
   }  
 
-  //Listener
-  canvas.addEventListener('mouseup', function(evt){
-    mouseIsDown = true;
-  }, false);    
-
+  //Listeners
   canvas.addEventListener('mouseup', function(evt){
     getMousePos(evt);
-    bubbleSelect();
-    mouseIsDown = false;
+    // bubbleSelect();
+    if(expandBt.checkMouse()){
+      targetValue = (targetValue == 1) ? (0):(1);
+    }    
   }, false);    
-
-  canvas.addEventListener('touchstart', function(evt){
-    mouseIsDown = true;
-  }, false);
 
   canvas.addEventListener('touchend', function(evt){
     getMousePos(evt);
-    bubbleSelect();
-    mouseIsDown = false;
+    // bubbleSelect();
+    if(expandBt.checkMouse()){
+      targetValue = (targetValue == 1) ? (0):(1);
+    }
   }, false);
 
   canvas.addEventListener('mousemove', function(evt){
