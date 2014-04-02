@@ -32,6 +32,8 @@ var firstDay, lastDay;
 var maxAmount;
 var maxAmountAday;
 
+/*----------------- INTERACTION ---------------*/
+var mouseIsDown = false;
 
 /*------------------- EASING ------------------*/
 var value = 0;
@@ -106,27 +108,43 @@ function setup(data){
 
   //Listener
   canvas.addEventListener('mouseup', function(evt){
+    mouseIsDown = true;
+  }, false);    
+
+  canvas.addEventListener('mouseup', function(evt){
     getMousePos(evt);
     bubbleSelect();
-    expandBt.update();
-
+    mouseIsDown = false;
   }, false);    
+
+  canvas.addEventListener('touchstart', function(evt){
+    mouseIsDown = true;
+  }, false);
 
   canvas.addEventListener('touchend', function(evt){
     getMousePos(evt);
     bubbleSelect();
-  }, false);    
+    mouseIsDown = false;
+  }, false);
+
+  canvas.addEventListener('mousemove', function(evt){
+    getMousePos(evt);
+  }, false);  
 
   //Start sketch
   update();
 }
 
 function update(){
+
   //Easing
   if(Math.abs(targetValue - value) > 0.0005){
     value += (targetValue - value) * easingSpeed;    
     // console.log(value); 
   }
+
+    //Check button
+    expandBt.update();
 
     //line graph
     chartBasis = map(value, 0, 1, 100, canvas.height - 300);

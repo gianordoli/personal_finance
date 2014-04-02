@@ -6,6 +6,7 @@ function initBubbleCategory(obj, description, totalAmount, type){
   obj.totalAmount = totalAmount;
   obj.type = type;
   obj.isSelected = true;
+  obj.isHovered = false;
 
   obj.pos = new Object();
   obj.radius = 0;
