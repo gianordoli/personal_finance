@@ -39,7 +39,7 @@ function createBall(world, index, pos, radius, color) {
 	ballSd.radius = radius;
 	ballSd.restitution = 0.2;
 	ballSd.friction = 0;
-	ballSd.color = color;
+	ballSd.color = parseHslaColor(color.h, color.s, color.b, color.a);
 	ballSd.index = index;
 
 	var ballBd = new b2BodyDef();

@@ -23,6 +23,14 @@ function initBubbleCategory(obj, description, totalAmount, type){
 function updateBubbleCategory(pos){
   this.radius = map(value, 0, 1, getRadiusFromArea(this.totalAmount)*bubbleScale, 40);
   this.pos = pos;
+  // console.log(this.color);
+  // if(this.checkMouse()){
+  //   this.color = parseHslaColor(0, 0, 90, 1);
+  //   canvas.style.cursor = 'pointer';    
+  // }else{
+  //   this.color = parseHslaColor(0, 0, 70, 1);
+  //   canvas.style.cursor = 'default'; 
+  // }
 }
 
 function drawBubbleCategory(){
@@ -89,7 +97,8 @@ function setColorBubbleCategory(myArray, i){
   //   brightness = map(hue, 50, 180, 30, 50);  
   // }
 
-  this.color = parseHslaColor(hue, saturation, brightness, 0.8);
+  this.myColor = { h: hue, s: saturation, b: brightness, a: 0.8 };
+  }
 }
 
 function setPosBubbleCategory(){

@@ -100,7 +100,7 @@ function setup(data){
       //Box 2D
       world = createWorld();
       for(var i = 0; i < bubbleCategories.length; i++){
-        createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].color);
+        createBall(world, i, bubbleCategories[i].pos, bubbleCategories[i].radius, bubbleCategories[i].myColor);
   }  
 
   //Listeners
@@ -195,16 +195,11 @@ function draw(){
 }
 
 function bubbleSelect(){
-  //Change from bubble to chart
-  // if(mousePos.y < chartBasis){
-    // targetValue = (targetValue == 1) ? (0):(1);   
 
   //Select bubbles
-  // }else{
-    for(var i = 0; i < bubbleCategories.length; i++){
-      bubbleCategories[i].checkMouse(i);
-    }
-  // }
+  for(var i = 0; i < bubbleCategories.length; i++){
+    bubbleCategories[i].checkMouse(i);
+  }
 
   //Update maximum amount a day
   maxAmountAday = getMaxAmountAday(lineCategories);
